@@ -1,0 +1,9 @@
+[client]
+showErrorDetails = true
+
+[server]
+runOnSave = true
+port = 8501
+
+[logger]
+level = "debug"
