@@ -1,0 +1,5 @@
+# Dricus du Plessis — Notes de scouting
+
+Du Plessis est le chaos organisé incarné : un style volontairement brouillon — enchaînements « sales », changements de rythme imprévisibles, switch stance anarchique — qui détruit la lecture des strikers techniques. Son cardio (9/10) lui permet de maintenir ce désordre 25 minutes, et son opportunisme de finisher (soumission d'Adesanya au round 4 alors qu'il perdait l'échange) en fait un danger permanent. Mentalité de champion : il trouve toujours un chemin.
+
+Failles tactiques observées : sa défense de takedown (62%) est le maillon faible face aux lutteurs d'élite — Chimaev l'a contrôlé au sol pendant des rounds entiers sans qu'il ne trouve de réponse, exposant un jeu de garde défensif limité. Debout, sa garde basse et son menton exposé en entrée le rendent hittable (Strickland et Adesanya l'ont touché proprement) ; il compense par la solidité (8/10) mais accumule les dégâts. Sa précision moyenne (51%) signifie qu'il perd les débuts de combat contre les techniciens avant que son rythme ne les use — un juge strict peut lui coûter une décision serrée.

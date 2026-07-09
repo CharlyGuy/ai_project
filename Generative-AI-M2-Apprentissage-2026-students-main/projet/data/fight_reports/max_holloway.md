@@ -1,0 +1,5 @@
+# Max Holloway — Notes de scouting
+
+Holloway est la machine à volume la plus prolifique de l'histoire de l'UFC (7,2 frappes significatives/min) avec un menton légendaire — quasi inarrêtable pendant une décennie. Sa pression en avançant, ses combinaisons boxe en 4-6 coups et sa capacité à hausser le rythme round après round noient les adversaires. Son cardio est infini et sa lecture défensive en pocket (head movement minimal mais timing parfait) lui permet de gagner les guerres d'usure.
+
+Failles tactiques observées : la puissance one-shot d'élite reste sa kryptonite — Topuria a réussi ce que personne n'avait fait en l'éteignant, en restant patient dans le pocket et en contrant son volume avec des crochets courts au timing parfait. Holloway ne recule presque jamais : cette linéarité offensive le rend prévisible pour un contre-puncheur discipliné. Sa lutte offensive est inexistante (0,2 takedown/15min), donc face à un adversaire qu'il ne peut pas dépasser debout, aucun plan B. Les low kicks soutenus ralentissent aussi son jeu de jambes, socle de tout son système.

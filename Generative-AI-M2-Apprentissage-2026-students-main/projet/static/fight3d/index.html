@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>FightStrategist AI — Fight Simulator 3D</title>
+<style>
+  /* Thème broadcast : #0e0e10 / #ff2d2d / #ff9d2d / corner bleu #4d7cff */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: #0e0e10; color: #fff; font-family: Arial, sans-serif; overflow: hidden; }
+  #stage { position: relative; width: 100vw; height: 100vh; }
+  #canvas3d { position: absolute; inset: 0; }
+
+  /* ---- HUD arcade ---- */
+  .hud { position: absolute; left: 0; right: 0; top: 0; padding: 12px 18px; display: flex;
+         justify-content: space-between; align-items: flex-start; pointer-events: none; z-index: 5; }
+  .corner { width: 38%; }
+  .fighter-label { font-weight: 900; text-transform: uppercase; font-size: 15px; letter-spacing: 1px;
+                   text-shadow: 0 0 8px rgba(0,0,0,.9); margin-bottom: 4px; }
+  .corner.b .fighter-label { text-align: right; }
+  .bar-shell { height: 16px; background: #1a1a1f; border: 1px solid #444; border-radius: 4px;
+               overflow: hidden; margin-bottom: 4px; }
+  .bar-shell.stamina { height: 7px; }
+  .bar { height: 100%; width: 100%; transition: width .25s; }
+  #stA, #stB { background: linear-gradient(90deg,#4d7cff,#7ea2ff); }
+  .corner.b .bar-shell { direction: rtl; }
+  #centerHud { text-align: center; width: 22%; }
+  #roundLabel { font-weight: 900; color: #ff9d2d; font-size: 14px; letter-spacing: 2px; }
+  #timer { font-weight: 900; font-size: 30px; text-shadow: 0 0 12px rgba(255,45,45,.6); }
+  #judges { font-size: 11px; color: #bbb; margin-top: 3px; }
+  #combo { position: absolute; top: 90px; left: 50%; transform: translateX(-50%);
+           font-size: 26px; font-weight: 900; color: #ff9d2d; text-transform: uppercase;
+           text-shadow: 0 0 14px rgba(255,157,45,.8); opacity: 0; transition: opacity .2s; z-index: 6; }
+
+  /* ---- overlay arcade (KO / round / winner) ---- */
+  #overlay { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+             font-size: 5rem; font-weight: 900; text-transform: uppercase; letter-spacing: 4px;
+             color: #ff2d2d; text-shadow: 0 0 30px rgba(255,45,45,.9), 0 0 60px rgba(255,157,45,.5);
+             opacity: 0; transition: opacity .35s; pointer-events: none; z-index: 8; }
+
+  /* ---- ticker commentaire ---- */
+  #ticker { position: absolute; bottom: 58px; left: 0; right: 0; text-align: center;
+            font-size: 15px; font-weight: 700; color: #ffd24d; padding: 8px;
+            background: linear-gradient(90deg, transparent, rgba(10,10,14,.85) 20%, rgba(10,10,14,.85) 80%, transparent);
+            z-index: 5; }
+
+  /* ---- contrôles ---- */
+  #controls { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; gap: 8px;
+              justify-content: center; z-index: 9; }
+  #controls button { background: #1a1a1f; color: #fff; border: 1px solid #ff2d2d; border-radius: 6px;
+                     padding: 7px 16px; font-weight: 900; text-transform: uppercase; cursor: pointer;
+                     font-size: 12px; letter-spacing: 1px; }
+  #controls button:hover { background: #ff2d2d; }
+  #controls button.speed.active { background: #ff9d2d; border-color: #ff9d2d; color: #0e0e10; }
+</style>
+</head>
+<body>
+<div id="stage">
+  <div id="canvas3d"></div>
+
+  <div class="hud">
+    <div class="corner a">
+      <div class="fighter-label" id="nameA" style="color:#4d7cff">FIGHTER A</div>
+      <div class="bar-shell"><div class="bar" id="hpA"></div></div>
+      <div class="bar-shell stamina"><div class="bar" id="stA"></div></div>
+    </div>
+    <div id="centerHud">
+      <div id="roundLabel">ROUND 1</div>
+      <div id="timer">5:00</div>
+      <div id="judges"></div>
+    </div>
+    <div class="corner b">
+      <div class="fighter-label" id="nameB" style="color:#ff2d2d">FIGHTER B</div>
+      <div class="bar-shell"><div class="bar" id="hpB"></div></div>
+      <div class="bar-shell stamina"><div class="bar" id="stB"></div></div>
+    </div>
+  </div>
+
+  <div id="combo"></div>
+  <div id="overlay"></div>
+  <div id="ticker">Chargement…</div>
+
+  <div id="controls">
+    <button onclick="FightEngine.play()">▶ Play</button>
+    <button onclick="FightEngine.pause()">⏸ Pause</button>
+    <button onclick="FightEngine.restart()">↻ Restart</button>
+    <button class="speed" data-s="0.5" onclick="setSpd(this)">0.5x</button>
+    <button class="speed active" data-s="1" onclick="setSpd(this)">1x</button>
+    <button class="speed" data-s="2" onclick="setSpd(this)">2x</button>
+  </div>
+</div>
+
+<script>
+  // Toute erreur JS devient visible à l'écran (sinon : canvas noir muet en démo).
+  window.onerror = function (msg, src, line) {
+    var t = document.getElementById("ticker");
+    if (t) { t.style.color = "#ff5b5b"; t.textContent = "⚠️ Erreur 3D : " + msg + " (ligne " + line + ")"; }
+    return false;
+  };
+</script>
+<script src="./three.min.js"></script>
+<script src="./sample_fight.js"></script>
+<script src="./engine.js"></script>
+<script>
+  function setSpd(btn) {
+    document.querySelectorAll("#controls .speed").forEach(function (b) { b.classList.remove("active"); });
+    btn.classList.add("active");
+    FightEngine.setSpeed(parseFloat(btn.dataset.s));
+  }
+  // window.FIGHT_DATA est injecté par Streamlit (src/fight3d_loader.py) ;
+  // ouvert seul, index.html retombe sur le sample (sample_fight.js).
+  try {
+    if (typeof THREE === "undefined") throw new Error("Three.js non chargé");
+    var DATA = window.FIGHT_DATA || window.SAMPLE_FIGHT_DATA;
+    FightEngine.init("canvas3d");
+    if (DATA) { FightEngine.loadFight(DATA); FightEngine.play(); }
+    else document.getElementById("ticker").textContent = "Aucune donnée de combat (FIGHT_DATA absent).";
+  } catch (e) {
+    var t = document.getElementById("ticker");
+    t.style.color = "#ff5b5b"; t.textContent = "⚠️ " + e.message;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+# Alex Pereira — Notes de scouting
+
+Pereira est le puncheur le plus dangereux du roster, deux divisions dominées grâce à un left hook légendaire calibré au millimètre et des low kicks qui détruisent la mobilité adverse en deux rounds. Sa gestion de la distance en kickboxeur d'élite (double champion Glory) lui permet de toucher sans être touché. Calme glacial dans l'octogone : il ne panique jamais, même touché.
+
+Failles tactiques observées : Pereira a des difficultés notoires face aux lutteurs d'élite qui changent de niveau rapidement — sa défense de takedown (66%) est la plus faible du top 10 light heavyweight, et une fois dos au sol, son jiu-jitsu défensif reste rudimentaire. Ankalaev l'a neutralisé en mixant feintes de tir et pression southpaw. Son jab est sous-utilisé : quand son low kick est neutralisé (checked), son arsenal se réduit dangereusement. Adesanya a aussi démontré qu'en étirant le combat et en le faisant douter, Poatan devient hittable en seconde moitié de round quand il charge son hook.

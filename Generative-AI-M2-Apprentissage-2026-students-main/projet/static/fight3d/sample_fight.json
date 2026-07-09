@@ -1,0 +1,340 @@
+{
+ "timeline": {
+  "fighter_a": "Khabib Nurmagomedov",
+  "fighter_b": "Justin Gaethje",
+  "events": [
+   {
+    "t": 2.2,
+    "round": 1,
+    "actor": "b",
+    "action": "cross",
+    "landed": true,
+    "damage": 4.9,
+    "target": "head",
+    "commentary": "Le cross de Justin Gaethje passe la garde"
+   },
+   {
+    "t": 4.2,
+    "round": 1,
+    "actor": "a",
+    "action": "takedown_attempt",
+    "landed": true,
+    "damage": 5.7,
+    "target": "body",
+    "commentary": "ÉNORME takedown de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 6.7,
+    "round": 1,
+    "actor": "a",
+    "action": "ground_control",
+    "landed": true,
+    "damage": 0.0,
+    "target": "body",
+    "commentary": "Khabib Nurmagomedov passe en position dominante"
+   },
+   {
+    "t": 9.2,
+    "round": 1,
+    "actor": "a",
+    "action": "ground_strikes",
+    "landed": true,
+    "damage": 2.2,
+    "target": "body",
+    "commentary": "Khabib Nurmagomedov pleut des coups depuis le dessus"
+   },
+   {
+    "t": 10.8,
+    "round": 1,
+    "actor": "b",
+    "action": "jab",
+    "landed": true,
+    "damage": 1.6,
+    "target": "head",
+    "commentary": "Justin Gaethje avance derrière son jab"
+   },
+   {
+    "t": 13.3,
+    "round": 1,
+    "actor": "a",
+    "action": "takedown_attempt",
+    "landed": false,
+    "damage": 0.0,
+    "target": "body",
+    "commentary": "Justin Gaethje défend le takedown de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 15.8,
+    "round": 1,
+    "actor": "a",
+    "action": "dodge",
+    "landed": true,
+    "damage": 0.0,
+    "target": "none",
+    "commentary": "Khabib Nurmagomedov esquive du buste !"
+   },
+   {
+    "t": 18.3,
+    "round": 1,
+    "actor": "a",
+    "action": "dodge",
+    "landed": true,
+    "damage": 0.0,
+    "target": "none",
+    "commentary": "Khabib Nurmagomedov slip le coup de justesse"
+   },
+   {
+    "t": 20.5,
+    "round": 1,
+    "actor": "a",
+    "action": "cross",
+    "landed": true,
+    "damage": 2.7,
+    "target": "head",
+    "commentary": "Grosse droite de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 22.3,
+    "round": 1,
+    "actor": "a",
+    "action": "jab",
+    "landed": true,
+    "damage": 2.0,
+    "target": "head",
+    "commentary": "Khabib Nurmagomedov mesure la distance au jab"
+   },
+   {
+    "t": 23.8,
+    "round": 1,
+    "actor": "a",
+    "action": "takedown_attempt",
+    "landed": false,
+    "damage": 0.0,
+    "target": "body",
+    "commentary": "Khabib Nurmagomedov tire mais Justin Gaethje garde ses appuis"
+   },
+   {
+    "t": 25.6,
+    "round": 1,
+    "actor": "b",
+    "action": "dodge",
+    "landed": true,
+    "damage": 0.0,
+    "target": "none",
+    "commentary": "Justin Gaethje slip le coup de justesse"
+   },
+   {
+    "t": 27.5,
+    "round": 1,
+    "actor": "a",
+    "action": "takedown_attempt",
+    "landed": false,
+    "damage": 0.0,
+    "target": "body",
+    "commentary": "Justin Gaethje défend le takedown de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 29.6,
+    "round": 1,
+    "actor": "b",
+    "action": "dodge",
+    "landed": true,
+    "damage": 0.0,
+    "target": "none",
+    "commentary": "Justin Gaethje slip le coup de justesse"
+   },
+   {
+    "t": 31.0,
+    "round": 1,
+    "actor": "b",
+    "action": "cross",
+    "landed": true,
+    "damage": 3.9,
+    "target": "head",
+    "commentary": "Le cross de Justin Gaethje passe la garde"
+   },
+   {
+    "t": 32.7,
+    "round": 1,
+    "actor": "b",
+    "action": "cross",
+    "landed": true,
+    "damage": 4.0,
+    "target": "head",
+    "commentary": "Grosse droite de Justin Gaethje !"
+   },
+   {
+    "t": 34.3,
+    "round": 1,
+    "actor": "b",
+    "action": "dodge",
+    "landed": true,
+    "damage": 0.0,
+    "target": "none",
+    "commentary": "Justin Gaethje slip le coup de justesse"
+   },
+   {
+    "t": 35.9,
+    "round": 1,
+    "actor": "b",
+    "action": "uppercut",
+    "landed": true,
+    "damage": 4.6,
+    "target": "head",
+    "commentary": "Justin Gaethje glisse l'uppercut dans la garde"
+   },
+   {
+    "t": 37.6,
+    "round": 1,
+    "actor": "a",
+    "action": "takedown_attempt",
+    "landed": true,
+    "damage": 5.2,
+    "target": "body",
+    "commentary": "ÉNORME takedown de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 39.7,
+    "round": 1,
+    "actor": "a",
+    "action": "ground_strikes",
+    "landed": true,
+    "damage": 2.5,
+    "target": "body",
+    "commentary": "Ground and pound de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 41.6,
+    "round": 1,
+    "actor": "a",
+    "action": "ground_control",
+    "landed": true,
+    "damage": 0.0,
+    "target": "body",
+    "commentary": "Contrôle écrasant de Khabib Nurmagomedov"
+   },
+   {
+    "t": 43.7,
+    "round": 1,
+    "actor": "a",
+    "action": "submission_attempt",
+    "landed": true,
+    "damage": 0.0,
+    "target": "body",
+    "commentary": "Tentative d'étranglement de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 45.2,
+    "round": 1,
+    "actor": "a",
+    "action": "ground_strikes",
+    "landed": true,
+    "damage": 1.9,
+    "target": "body",
+    "commentary": "Khabib Nurmagomedov pleut des coups depuis le dessus"
+   },
+   {
+    "t": 43.3,
+    "round": 1,
+    "actor": "a",
+    "action": "takedown_attempt",
+    "landed": true,
+    "damage": 4.0,
+    "target": "body",
+    "commentary": "ÉNORME takedown de Khabib Nurmagomedov !"
+   },
+   {
+    "t": 44.8,
+    "round": 1,
+    "actor": "a",
+    "action": "submission_attempt",
+    "landed": true,
+    "damage": 3.0,
+    "target": "body",
+    "commentary": "Khabib Nurmagomedov cherche la soumission !"
+   },
+   {
+    "t": 46.3,
+    "round": 1,
+    "actor": "a",
+    "action": "submission_win",
+    "landed": true,
+    "damage": 5.0,
+    "target": "body",
+    "commentary": "Justin Gaethje TAPE !! Soumission de Khabib Nurmagomedov !!"
+   }
+  ],
+  "result": {
+   "winner": "a",
+   "winner_name": "Khabib Nurmagomedov",
+   "method": "Soumission",
+   "round": 1,
+   "time": "3:51",
+   "final_health": {
+    "a": 81.0,
+    "b": 0.0
+   },
+   "scorecards": [],
+   "stats_summary": {
+    "a": {
+     "strikes_landed": 5,
+     "takedowns": 3,
+     "control_time_s": 24
+    },
+    "b": {
+     "strikes_landed": 5,
+     "takedowns": 0,
+     "control_time_s": 0
+    }
+   }
+  }
+ },
+ "fighters": {
+  "a": {
+   "id": 15,
+   "name": "Khabib Nurmagomedov",
+   "nickname": "The Eagle",
+   "weight_class": "Lightweight",
+   "height_cm": 178,
+   "reach_cm": 178,
+   "stance": "Orthodox",
+   "wins": 29,
+   "losses": 0,
+   "draws": 0,
+   "striking_accuracy_pct": 49.0,
+   "strikes_landed_per_min": 4.1,
+   "takedown_avg_per_15min": 5.3,
+   "takedown_defense_pct": 85.0,
+   "ko_rate_pct": 10.0,
+   "submission_rate_pct": 38.0,
+   "chin_durability": 9.0,
+   "cardio_rating": 10.0,
+   "power_rating": 6.0,
+   "style_tags": "Lutteur suffocant, Ground-and-pound, Cardio machine, Pression",
+   "photo_datauri": null
+  },
+  "b": {
+   "id": 10,
+   "name": "Justin Gaethje",
+   "nickname": "The Highlight",
+   "weight_class": "Lightweight",
+   "height_cm": 180,
+   "reach_cm": 178,
+   "stance": "Orthodox",
+   "wins": 26,
+   "losses": 6,
+   "draws": 0,
+   "striking_accuracy_pct": 58.0,
+   "strikes_landed_per_min": 7.3,
+   "takedown_avg_per_15min": 0.2,
+   "takedown_defense_pct": 79.0,
+   "ko_rate_pct": 77.0,
+   "submission_rate_pct": 4.0,
+   "chin_durability": 6.0,
+   "cardio_rating": 8.0,
+   "power_rating": 9.0,
+   "style_tags": "Brawler, Low kicks dévastateurs, Uppercut",
+   "photo_datauri": null
+  }
+ }
+}

@@ -1,0 +1,5 @@
+# Israel Adesanya — Notes de scouting
+
+Adesanya excelle en contre-attaque : gestion de distance chirurgicale, lecture des timings adverses, et une capacité rare à faire payer chaque entrée ratée (le KO sur Pereira à UFC 287 est un cas d'école de contre préparé). Son kickboxing en switch stance multiplie les angles, et sa défense de takedown (78%) tient face aux lutteurs moyens.
+
+Failles tactiques observées : Adesanya recule sous la pression linéaire — Strickland l'a battu en marchant simplement vers lui derrière un jab haut volume, le privant de l'espace nécessaire à ses contres. Son output offensif chute dangereusement quand l'adversaire refuse de prendre l'initiative (49% de précision mais volume faible). Du Plessis a exposé une seconde faille : le chaos. Face à un rythme brouillon, imprévisible, avec des enchaînements sales mais constants, Adesanya perd sa lecture et finit par céder physiquement. Sa lutte offensive est inexistante (0 takedown tenté en carrière récente) : il ne peut jamais changer de plan.

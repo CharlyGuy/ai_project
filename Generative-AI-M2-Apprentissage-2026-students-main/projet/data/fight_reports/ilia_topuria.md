@@ -1,0 +1,5 @@
+# Ilia Topuria — Notes de scouting
+
+Topuria est un finisher générationnel : boxe chirurgicale à la cubaine (poids du corps parfaitement transféré, crochets courts en pocket), puissance one-shot dans les deux mains, et une base de grappling géorgienne qui rend tout takedown adverse quasi impossible (92% de défense). Invaincu, il a éteint trois légendes consécutives (Volkanovski, Holloway, Oliveira) — toutes par KO. Son calme sous pression est anormal : il avance, coupe la cage, et attend la demi-erreur.
+
+Failles tactiques observées : très peu de données adverses exploitables, mais des axes existent. Son allonge courte (175 cm) l'oblige à traverser la distance longue — un jab d'élite et un jeu de pivots constants (le blueprint Holloway des rounds 1-2 avant le KO) le font travailler. Son volume est moyen (4,6/min) : il mise sur la qualité, donc un adversaire à très haut volume peut voler des rounds. Enfin, il n'a jamais été down ni réellement mis en difficulté — sa réaction dans l'adversité réelle demeure une inconnue totale, et son passage en lightweight le prive de l'avantage de taille qu'il avait en featherweight.

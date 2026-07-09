@@ -1,0 +1,5 @@
+# Justin Gaethje — Notes de scouting
+
+Gaethje est le brawler le plus spectaculaire du roster : low kicks qui détruisent les appuis en deux rounds, uppercut en contre dévastateur, et une capacité unique à transformer chaque combat en guerre de tranchées où son taux de KO (77%) fait la loi. Sa base de lutte All-American — utilisée exclusivement en défense — lui permet de garder le combat debout où il excelle.
+
+Failles tactiques observées : le style Gaethje a un coût cumulatif — son menton (6/10 après les guerres contre Poirier, Chandler, Holloway) encaisse de plus en plus mal, et le KO au buzzer contre Holloway a montré qu'il peut être éteint même en gagnant l'échange. Il absorbe énormément de volume par choix tactique : face à un point-fighter mobile qui refuse la guerre, il court après le combat et perd des rounds. Les grapplers d'élite restent son autre kryptonite historique (soumis par Khabib, Oliveira) : sa défense de soumission ne suit pas sa défense de takedown. Après 30 guerres, la première grosse frappe encaissée change désormais son langage corporel.

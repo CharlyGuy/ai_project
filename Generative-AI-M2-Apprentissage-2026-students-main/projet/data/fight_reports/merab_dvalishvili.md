@@ -1,0 +1,5 @@
+# Merab Dvalishvili — Notes de scouting
+
+Merab est la définition de la pression de lutte infinie : 6,3 takedowns réussis par 15 minutes (record de la division), un chain wrestling qui enchaîne single leg → body lock → trip sans temps mort, et un cardio surhumain qui lui permet de tirer au round 5 comme au round 1. Il ne cherche pas le finish : il noie l'adversaire sous un rythme que personne au monde ne peut suivre 25 minutes. Ses victoires sur O'Malley (x2), Umar Nurmagomedov et Cejudo l'ont prouvé contre tous les styles.
+
+Failles tactiques observées : son striking reste rudimentaire (42% de précision, la plus faible du top 10) — il mange des coups propres en entrant sur ses tirs, et un contreur d'élite avec un uppercut/genou préparé sur le level change reste la menace théorique numéro un. Sa puissance est quasi nulle (5/10) : il ne peut jamais changer le cours d'un combat d'un seul coup. S'il affronte un adversaire à la défense de takedown exceptionnelle ET au cardio équivalent, son plan A devient inopérant et il n'a pas de plan B crédible debout. Sa petite allonge (173 cm) le condamne à traverser la distance en encaissant.

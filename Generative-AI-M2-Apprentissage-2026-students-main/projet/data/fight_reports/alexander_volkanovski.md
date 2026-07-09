@@ -1,0 +1,5 @@
+# Alexander Volkanovski — Notes de scouting
+
+Volkanovski est le featherweight le plus accompli de l'histoire : fight IQ suprême, capacité d'adaptation en plein combat (les ajustements entre les rounds contre Holloway sont enseignés en camp), volume constant (6,3 frappes/min) et un cardio de marathonien. Malgré 168 cm, son jeu de jambes et ses angles compensent le déficit d'allonge contre des adversaires plus grands. Sa lutte défensive et offensive est le socle : il choisit où le combat se passe.
+
+Failles tactiques observées : l'âge et l'accumulation de dégâts. Les deux KO subis (Makhachev, Topuria) sont arrivés coup sur coup — le premier sur une high kick en short notice, le second sur une contre-droite en pocket. Son menton, historiquement solide, montre des signes d'usure : il sort désormais des échanges qu'il gagnait avant. À 36 ans passés, sa vitesse de réaction en défense décline face aux puncheurs d'élite, même si son cardio et son QI restent intacts. Contre des grapplers lourds, son gabarit reste un handicap en cas de bodylock prolongé contre la cage.

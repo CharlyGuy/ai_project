@@ -1,0 +1,5 @@
+# Khamzat Chimaev — Notes de scouting
+
+Chimaev est le grappler le plus terrifiant de sa génération : blitz initial qui traverse la cage en une seconde, takedowns imparables (4,5/15min avec 60% de réussite), et un ground and pound de heavyweight dans un corps de middleweight. Sa soumission de Whittaker en un round — face au meilleur anti-lutteur de la division — a montré un niveau de contrôle jamais vu. Invaincu, il finit 80% de ses combats dans le round 1.
+
+Failles tactiques observées : le cardio est LA question — contre Usman puis du Plessis, son output s'est effondré après le round 2 : rythme divisé par trois, mains basses, respiration bouche ouverte. Son plan de combat est monodimensionnel dans l'urgence : quand le takedown ne vient pas immédiatement, son striking devient imprudent (il avait été touché sérieusement par Burns). Les adversaires qui survivent au premier blitz ET se relèvent rapidement inversent la dynamique psychologique du combat. Un champion du calibre grappling équivalent avec un meilleur cardio reste son pire matchup théorique.

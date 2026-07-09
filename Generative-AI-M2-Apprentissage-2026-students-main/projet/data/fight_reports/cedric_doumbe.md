@@ -1,0 +1,5 @@
+# Cedric Doumbe — Notes de scouting
+
+Doumbe apporte un pedigree kickboxing d'exception (multiple champion Glory) dans le MMA : précision de 66% (la meilleure du roster), contres fulgurants, low kicks lourds et une puissance one-shot qui a produit des KO en quelques secondes (17 secondes contre Zebo). Son trash-talking et son calme scénique cachent un timing de contre parmi les plus purs du circuit — il attend la demi-erreur et la punit d'un seul coup.
+
+Failles tactiques observées : le sol reste la zone rouge — sa défense de takedown (55%) est la plus faible du roster côté strikers, son jeu de garde est embryonnaire, et son expérience MMA (7 combats) ne couvre pas les scénarios de contrôle prolongé. Sa défaite contre Baki a aussi montré une gestion de l'adversité perfectible : quand le plan A (le KO rapide) ne vient pas, son volume chute et il concède l'initiative. Tout lutteur correct avec un menton solide a un blueprint évident : absorber ou éviter les deux premières minutes, puis enchaîner les tirs contre la cage.

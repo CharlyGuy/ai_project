@@ -18,3 +18,6 @@ __pycache__/
 chroma_db/
 *.sqlite3
 chroma_index/
+
+# Claude Code local settings (personnel)
+.claude/settings.local.json

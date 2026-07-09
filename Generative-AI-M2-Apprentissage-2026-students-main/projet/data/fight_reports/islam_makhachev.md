@@ -1,0 +1,5 @@
+# Islam Makhachev — Notes de scouting
+
+Makhachev est le grappler le plus dominant du MMA actuel : chaîne sambo-lutte qui enchaîne les tentatives jusqu'à la réussite, contrôle au sol suffocant qui vide le cardio adverse, et un jeu de soumission opportuniste (46% de ses victoires). Son cardio est une arme en soi — il est plus frais au round 5 qu'au round 2. Son striking southpaw a beaucoup progressé : la left high kick qui a éteint Volkanovski prouve qu'on ne peut plus se contenter de défendre le takedown.
+
+Failles tactiques observées : Makhachev reste hittable dans les 90 premières secondes, avant qu'il n'ait imposé son grappling — Volkanovski (1er combat) l'a touché proprement en early rounds en défendant les tirs et en le forçant à boxer. Son volume de frappe est faible (2,6 frappes/min) : s'il ne peut pas amener le combat au sol, il perd des rounds sur les cartes. Les adversaires avec une défense de takedown d'élite (90%+) et un cardio équivalent représentent le seul vrai profil à risque. Une tendance à la passivité en position dominante peut aussi coûter des points face à des juges sévères.

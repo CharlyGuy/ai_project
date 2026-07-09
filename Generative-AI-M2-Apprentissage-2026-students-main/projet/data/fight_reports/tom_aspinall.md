@@ -1,0 +1,5 @@
+# Tom Aspinall — Notes de scouting
+
+Aspinall est une anomalie physique chez les heavyweights : vitesse de main de middleweight, précision de 59% et un finish rate terrifiant — toutes ses victoires UFC sont arrivées avant la fin du round 1, à l'exception d'une seule. Son blitz initial (jab-cross en avançant, uppercut en sortie de clinch) éteint la plupart des adversaires avant qu'ils ne s'installent dans le combat. Il possède aussi un vrai sol : ceinture noire de jiu-jitsu, takedowns propres.
+
+Failles tactiques observées : son cardio reste la grande inconnue — il n'a quasiment jamais vu un round 3, et son gabarit (120 kg explosifs) suggère une décroissance rapide si le combat s'étire. Sa défaite contre Blaydes (blessure au genou) rappelle une fragilité articulaire. Face à un adversaire capable de survivre à la tempête des 5 premières minutes et de l'emmener en eaux profondes, Aspinall n'a jamais montré de plan B. Il a également tendance à reculer en ligne droite sous la pression, menton haut, ce qu'un contre-attaquant puissant peut exploiter.
