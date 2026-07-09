@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Fnac Catalog Chatbot</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    :root { --fnac-yellow: #ffce07; --fnac-dark: #1b1b1b; }
+    body {
+      font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      max-width: 640px; margin: 40px auto; padding: 0 16px; color: var(--fnac-dark);
+    }
+    h1 { display: flex; align-items: center; gap: 10px; font-size: 22px; }
+    h1 .badge {
+      background: var(--fnac-yellow); color: var(--fnac-dark);
+      padding: 2px 8px; border-radius: 4px; font-weight: 700; font-size: 14px;
+    }
+    #chat {
+      border: 1px solid #ddd; border-radius: 8px; padding: 16px; min-height: 200px;
+      margin-bottom: 12px; background: #fafafa;
+    }
+    .msg { margin-bottom: 14px; line-height: 1.4; }
+    .msg .who { font-weight: 600; font-size: 12px; text-transform: uppercase; color: #888; }
+    .msg.user .who { color: #555; }
+    .msg.bot .who { color: #b8860b; }
+    .sources { margin-top: 6px; font-size: 13px; color: #666; }
+    .sources li { margin-bottom: 2px; }
+    form { display: flex; gap: 8px; }
+    input[type=text] {
+      flex: 1; padding: 10px 12px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px;
+    }
+    button {
+      padding: 10px 16px; border: none; border-radius: 6px; background: var(--fnac-dark);
+      color: white; font-size: 15px; cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: default; }
+    .hint { color: #888; font-size: 13px; margin-top: 8px; }
+  </style>
+</head>
+<body>
+  <h1><span class="badge">fnac</span> Catalog chatbot</h1>
+  <p class="hint">Ask about the catalog, e.g. "do you have noise-cancelling headphones under €200?"</p>
+
+  <div id="chat"></div>
+
+  <form id="ask-form">
+    <input type="text" id="question" placeholder="Type your question..." autocomplete="off" autofocus>
+    <button type="submit" id="ask-btn">Ask</button>
+  </form>
+
+  <script>
+    const chat = document.getElementById("chat");
+    const form = document.getElementById("ask-form");
+    const input = document.getElementById("question");
+    const btn = document.getElementById("ask-btn");
+
+    function addMessage(who, text, sources) {
+      const div = document.createElement("div");
+      div.className = "msg " + (who === "You" ? "user" : "bot");
+      let html = `<div class="who">${who}</div><div>${text}</div>`;
+      if (sources && sources.length) {
+        html += "<ul class='sources'>" +
+          sources.map(s => `<li>${s.name} — ${s.category} — €${s.price.toFixed(0)}</li>`).join("") +
+          "</ul>";
+      }
+      div.innerHTML = html;
+      chat.appendChild(div);
+      chat.scrollTop = chat.scrollHeight;
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const question = input.value.trim();
+      if (!question) return;
+      addMessage("You", question);
+      input.value = "";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/ask", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ question }),
+        });
+        const data = await res.json();
+        if (res.ok) {
+          addMessage("Fnac assistant", data.answer, data.sources);
+        } else {
+          addMessage("Fnac assistant", data.error || "Something went wrong.");
+        }
+      } catch (err) {
+        addMessage("Fnac assistant", "Network error — is the server running?");
+      } finally {
+        btn.disabled = false;
+        input.focus();
+      }
+    });
+  </script>
+</body>
+</html>

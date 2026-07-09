@@ -1,0 +1,5 @@
+mcp[cli]
+chromadb
+sentence-transformers
+anthropic
+pandas
