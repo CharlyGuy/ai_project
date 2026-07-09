@@ -31,66 +31,241 @@ load_dotenv()
 st.set_page_config(page_title="FightStrategist AI — UFC Insights", page_icon="🥊", layout="wide")
 
 # --------------------------------------------------------------------------
-# PALETTE + CSS "BROADCAST"
+# PALETTE MODERNE + GLASSMORPHISM DESIGN 2025
 # --------------------------------------------------------------------------
-DARK = "#0D0D0D"
-CARD = "#161618"
-RED = "#E60000"
-GOLD = "#D4AF37"
-BLUE = "#4d7cff"
+# Palette contemporaine: gradients doux + couleurs vibrantes
+DARK_BG = "#0F0F1E"
+GLASS_LIGHT = "rgba(255, 255, 255, 0.08)"
+GLASS_DARK = "rgba(20, 20, 35, 0.6)"
+ACCENT_RED = "#FF1744"
+ACCENT_BLUE = "#00D9FF"
+ACCENT_PURPLE = "#9C27B0"
+ACCENT_GOLD = "#FFD700"
+TEXT_PRIMARY = "#F5F7FA"
+TEXT_SECONDARY = "#B0B8C1"
+SUCCESS_GREEN = "#2ECC71"
+WARNING_ORANGE = "#FF9500"
 
 st.markdown(
     f"""
     <style>
-    .stApp {{ background-color: {DARK}; }}
-    .stMainBlock, .stMainBlock * {{ color: #f5f5f5; letter-spacing: 0.3px; }}
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@700;800;900&display=swap');
 
-    [data-testid="stSidebar"], [data-testid="stSidebar"] * {{
-        background-color: #111113 !important; color: #d8d8d8 !important;
+    * {{ font-family: 'Inter', sans-serif; }}
+
+    .stApp {{
+        background: linear-gradient(135deg, {DARK_BG} 0%, #1A1A2E 100%);
+        color: {TEXT_PRIMARY};
     }}
 
+    .stMainBlock, .stMainBlock * {{
+        color: {TEXT_PRIMARY};
+        letter-spacing: 0.5px;
+    }}
+
+    [data-testid="stSidebar"] {{
+        background: linear-gradient(180deg, rgba(15, 15, 30, 0.95) 0%, rgba(25, 25, 45, 0.95) 100%) !important;
+        border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+    }}
+
+    [data-testid="stSidebar"] * {{ color: {TEXT_PRIMARY} !important; }}
+
+    /* TITRE PRINCIPAL */
     .fs-title {{
-        text-align: center; font-size: 3rem; font-weight: 900; text-transform: uppercase;
-        background: linear-gradient(90deg, {RED}, {GOLD});
-        -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        font-family: 'Arial Black', sans-serif; margin-bottom: 0;
+        text-align: center;
+        font-size: 3.5rem;
+        font-weight: 900;
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(120deg, {ACCENT_RED}, {ACCENT_GOLD}, {ACCENT_BLUE});
+        background-size: 200% auto;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        margin-bottom: 0.5rem;
+        letter-spacing: -1px;
+        animation: gradient-shift 3s ease infinite;
     }}
-    .fs-subtitle {{ text-align: center; color: #9a9a9a !important; margin-top: 2px;
-                    text-transform: uppercase; font-size: 0.85rem; letter-spacing: 3px; }}
 
-    .vs-badge {{ text-align: center; font-size: 2.4rem; font-weight: 900; color: {RED} !important;
-                 padding-top: 2.6rem; font-family: 'Arial Black', sans-serif;
-                 text-shadow: 0 0 22px rgba(230,0,0,.6); }}
+    @keyframes gradient-shift {{
+        0%, 100% {{ background-position: 0% center; }}
+        50% {{ background-position: 100% center; }}
+    }}
 
+    .fs-subtitle {{
+        text-align: center;
+        color: {TEXT_SECONDARY} !important;
+        margin-top: 0.5rem;
+        font-size: 0.95rem;
+        letter-spacing: 2px;
+        font-weight: 500;
+    }}
+
+    /* VS BADGE */
+    .vs-badge {{
+        text-align: center;
+        font-size: 2.8rem;
+        font-weight: 900;
+        color: {ACCENT_RED} !important;
+        padding-top: 1rem;
+        font-family: 'Poppins', sans-serif;
+        text-shadow: 0 0 30px rgba(255, 23, 68, 0.4);
+        letter-spacing: -1px;
+    }}
+
+    /* TRACE BOX - Agent execution trace */
     .trace-box {{
-        background: #121214; border-left: 3px solid {RED}; border-radius: 6px;
-        padding: 0.55rem 0.9rem; margin-bottom: 0.45rem; font-size: 0.92rem;
+        background: {GLASS_DARK};
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-left: 4px solid {ACCENT_RED};
+        border-radius: 12px;
+        padding: 1rem;
+        margin-bottom: 0.75rem;
+        font-size: 0.95rem;
+        transition: all 0.3s ease;
     }}
-    .trace-box code {{ color: {GOLD} !important; background: transparent; }}
-    .trace-thought {{ border-left-color: {BLUE}; }}
-    .trace-action {{ border-left-color: {GOLD}; }}
-    .trace-observation {{ border-left-color: #2ecf7a; }}
 
+    .trace-box:hover {{
+        background: {GLASS_LIGHT};
+        border-left-color: {ACCENT_BLUE};
+        transform: translateX(4px);
+    }}
+
+    .trace-box code {{
+        color: {ACCENT_GOLD} !important;
+        background: rgba(255, 215, 0, 0.1);
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: 'Courier New', monospace;
+        font-size: 0.85rem;
+    }}
+
+    .trace-thought {{ border-left-color: {ACCENT_BLUE} !important; }}
+    .trace-action {{ border-left-color: {ACCENT_GOLD} !important; }}
+    .trace-observation {{ border-left-color: {SUCCESS_GREEN} !important; }}
+
+    /* GOLD BOX - Premium predictions */
     .gold-box {{
-        background: linear-gradient(135deg, rgba(212,175,55,.12), rgba(212,175,55,.04));
-        border: 1px solid {GOLD}; border-radius: 10px; padding: 0.9rem 1.2rem;
-        text-align: center; font-size: 1.15rem; font-weight: 800; color: {GOLD} !important;
-        text-transform: uppercase; letter-spacing: 1px;
+        background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 23, 68, 0.08) 100%);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 215, 0, 0.3);
+        border-radius: 16px;
+        padding: 1.5rem;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: {ACCENT_GOLD} !important;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 8px 32px rgba(255, 215, 0, 0.1);
+        transition: all 0.3s ease;
     }}
-    .gameplan-card {{
-        background: {CARD}; border-radius: 10px; padding: 1.2rem; height: 100%;
-        border-top: 3px solid {RED};
-    }}
-    .gameplan-card.blue {{ border-top-color: {BLUE}; }}
-    .gameplan-card h4 {{ text-transform: uppercase; font-family: 'Arial Black', sans-serif; }}
-    .gameplan-card li {{ margin-bottom: 0.35rem; }}
 
-    .baseline-box {{
-        background: #1c1c1f; border: 1px dashed #555; border-radius: 10px;
-        padding: 1.1rem 1.3rem; color: #c9c9c9 !important;
+    .gold-box:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 12px 48px rgba(255, 215, 0, 0.15);
     }}
-    .value-tag {{ color: {GOLD} !important; font-weight: 800; }}
-    .methodo {{ font-size: 0.8rem; color: #9a9a9a !important; }}
+
+    /* GAMEPLAN CARD */
+    .gameplan-card {{
+        background: {GLASS_DARK};
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 16px;
+        padding: 1.5rem;
+        height: 100%;
+        border-top: 3px solid {ACCENT_RED};
+        transition: all 0.3s ease;
+    }}
+
+    .gameplan-card:hover {{
+        border-color: rgba(255, 255, 255, 0.2);
+        background: {GLASS_LIGHT};
+        transform: translateY(-4px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+    }}
+
+    .gameplan-card.blue {{ border-top-color: {ACCENT_BLUE}; }}
+
+    .gameplan-card h4 {{
+        text-transform: uppercase;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1.1rem;
+        letter-spacing: 1px;
+        margin-bottom: 1rem;
+    }}
+
+    .gameplan-card li {{
+        margin-bottom: 0.6rem;
+        line-height: 1.6;
+        font-size: 0.95rem;
+    }}
+
+    /* BASELINE BOX - LLM seul */
+    .baseline-box {{
+        background: {GLASS_DARK};
+        backdrop-filter: blur(10px);
+        border: 1px dashed rgba(255, 149, 0, 0.4);
+        border-radius: 12px;
+        padding: 1.25rem;
+        color: {TEXT_SECONDARY} !important;
+        transition: all 0.3s ease;
+    }}
+
+    .baseline-box:hover {{
+        border-color: rgba(255, 149, 0, 0.6);
+    }}
+
+    .value-tag {{
+        color: {ACCENT_GOLD} !important;
+        font-weight: 700;
+        padding: 2px 8px;
+        background: rgba(255, 215, 0, 0.1);
+        border-radius: 4px;
+    }}
+
+    .methodo {{
+        font-size: 0.85rem;
+        color: {TEXT_SECONDARY} !important;
+        line-height: 1.6;
+    }}
+
+    /* BUTTONS */
+    .stButton > button {{
+        background: linear-gradient(135deg, {ACCENT_RED} 0%, #FF5252 100%);
+        color: white !important;
+        border: none;
+        border-radius: 10px;
+        font-weight: 600;
+        font-size: 0.95rem;
+        padding: 0.6rem 1.5rem !important;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(255, 23, 68, 0.3);
+    }}
+
+    .stButton > button:hover {{
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(255, 23, 68, 0.4);
+    }}
+
+    /* SELECTBOX & INPUT */
+    .stSelectbox, .stTextInput, .stSlider {{
+        background: {GLASS_DARK} !important;
+        border: 1px solid rgba(255, 255, 255, 0.1) !important;
+        border-radius: 10px !important;
+    }}
+
+    /* TABS */
+    [role="tab"] {{
+        border-radius: 10px 10px 0 0 !important;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }}
+
+    [role="tab"][aria-selected="true"] {{
+        border-bottom-color: {ACCENT_RED} !important;
+        color: {ACCENT_RED} !important;
+    }}
     </style>
     """,
     unsafe_allow_html=True,
@@ -506,65 +681,111 @@ with tab_elo:
 
 # ============================ ONGLET 5 : LIVE UPDATES ========================
 with tab_live:
-    st.header("🔴 Mises à jour en temps réel")
     st.markdown(
-        '<div class="baseline-box">📡 Dernières news, blessures rapportées, changements odds et développements '
-        'd\'entraînement — mises à jour publiées en direct de la communauté MMA.</div>',
+        f"""
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Poppins', sans-serif; font-size: 2.5rem;
+                       background: linear-gradient(120deg, {ACCENT_RED}, {ACCENT_BLUE});
+                       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                       margin-bottom: 0.5rem;">🔴 Live Updates</h1>
+            <p style="color: {TEXT_SECONDARY}; font-size: 1rem;">Dernières infos en temps réel du monde MMA</p>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
-    # Filtrer par combattant ou voir toutes les updates
-    col_filter, col_auto = st.columns([3, 2])
+    st.markdown(
+        f"""
+        <div class="baseline-box" style="margin-bottom: 1.5rem;">
+            <strong style="color: {ACCENT_BLUE};">📡 Real-time Insights</strong><br>
+            Blessures rapportées • Nouvelles d'entraînement • Mouvements d'odds • Analyse de forme
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    # Filtrer par combattant
+    col_filter, col_refresh = st.columns([3, 1])
     with col_filter:
-        live_filter = st.selectbox("Filtrer par combattant", ["Tous les combattants"] + fighters, key="live_filter")
-    with col_auto:
-        if st.button("🔄 Rafraîchir", use_container_width=True):
+        live_filter = st.selectbox("🔍 Filtrer", ["Tous les combattants"] + fighters, key="live_filter")
+    with col_refresh:
+        if st.button("🔄", use_container_width=True, help="Rafraîchir"):
             st.rerun()
 
     filter_name = None if live_filter == "Tous les combattants" else live_filter
-
-    # Récupérer les updates temps réel
     updates_result = get_live_updates(filter_name)
     updates = updates_result.get("recent_updates", [])
 
     if not updates:
-        st.info("Aucune mise à jour en direct pour le moment. Vérifiez à nouveau plus tard! 📡")
+        st.markdown(
+            f"""
+            <div style="text-align: center; padding: 3rem 1rem;">
+                <p style="font-size: 2rem;">📡</p>
+                <p style="color: {TEXT_SECONDARY};">Aucune mise à jour pour le moment</p>
+                <p style="font-size: 0.9rem; color: {TEXT_SECONDARY};">Revenez dans quelques instants</p>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
     else:
-        # Afficher les updates groupées par type
+        # Type et couleurs modernes
         update_types = {
-            "injury": ("🚑", "Blessure", "#ff6b6b"),
-            "news": ("📰", "News", "#4ecdc4"),
-            "odds": ("💰", "Odds", "#ffe66d"),
-            "form": ("📈", "Forme", "#95e1d3"),
-            "training": ("💪", "Entraînement", "#a8dadc"),
+            "injury": ("🚑", "BLESSURE", ACCENT_RED),
+            "news": ("📰", "NEWS", ACCENT_BLUE),
+            "odds": ("💰", "ODDS", ACCENT_GOLD),
+            "form": ("📈", "FORME", SUCCESS_GREEN),
+            "training": ("💪", "ENTRAÎNEMENT", ACCENT_PURPLE),
         }
 
-        for update in updates:
+        for idx, update in enumerate(updates):
             upd_type = update.get("update_type", "news")
-            icon, label, color = update_types.get(upd_type, ("📌", upd_type.title(), "#cccccc"))
+            icon, label, color = update_types.get(upd_type, ("📌", upd_type.upper(), TEXT_SECONDARY))
             severity = update.get("severity", "info")
-            severity_color = "#ff6b6b" if severity == "critical" else "#ffa600" if severity == "warning" else "#4ecdc4"
 
-            # Card style pour chaque update
+            severity_styling = {
+                "critical": (ACCENT_RED, "⚠️ CRITIQUE"),
+                "warning": (WARNING_ORANGE, "⚡ ATTENTION"),
+                "info": (ACCENT_BLUE, "ℹ️ INFO"),
+            }
+            sev_color, sev_label = severity_styling.get(severity, (TEXT_SECONDARY, ""))
+
             st.markdown(
                 f"""
-                <div style="background: {color}11; border-left: 4px solid {color};
-                            border-radius: 8px; padding: 12px 16px; margin-bottom: 12px;">
-                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
-                        <span style="font-size: 1.3rem;">{icon}</span>
-                        <span style="color: {color}; font-weight: 800; text-transform: uppercase;
-                                     letter-spacing: 1px;">{label}</span>
-                        <span style="color: {severity_color}; font-size: 0.75rem;
-                                     font-weight: 700;">● {severity.upper()}</span>
+                <div style="
+                    background: linear-gradient(135deg, rgba({int(color.lstrip('#')[:2], 16)},
+                                                             {int(color.lstrip('#')[2:4], 16)},
+                                                             {int(color.lstrip('#')[4:], 16)}, 0.08) 0%,
+                                                rgba(255, 255, 255, 0.02) 100%);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba({int(color.lstrip('#')[:2], 16)},
+                                          {int(color.lstrip('#')[2:4], 16)},
+                                          {int(color.lstrip('#')[4:], 16)}, 0.3);
+                    border-left: 4px solid {color};
+                    border-radius: 14px;
+                    padding: 1.25rem;
+                    margin-bottom: 1rem;
+                    transition: all 0.3s ease;
+                " class="update-card">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 0.75rem;">
+                        <span style="font-size: 1.4rem;">{icon}</span>
+                        <span style="color: {color}; font-weight: 700; text-transform: uppercase;
+                                     letter-spacing: 1px; font-size: 0.85rem;">{label}</span>
+                        <span style="color: {sev_color}; font-size: 0.75rem; font-weight: 700;
+                                     margin-left: auto;">{sev_label}</span>
                     </div>
-                    <div style="font-weight: 700; color: #eee; margin-bottom: 4px;">
+                    <div style="font-weight: 700; color: {TEXT_PRIMARY}; margin-bottom: 0.5rem;
+                                font-size: 1.05rem; line-height: 1.4;">
                         {update.get('title', 'Sans titre')}
                     </div>
-                    <div style="color: #bbb; font-size: 0.95rem; margin-bottom: 8px;">
+                    <div style="color: {TEXT_SECONDARY}; font-size: 0.95rem; margin-bottom: 0.75rem;
+                                line-height: 1.5;">
                         {update.get('description', '')}
                     </div>
-                    <div style="color: #999; font-size: 0.8rem;">
-                        🕐 {update.get('fighter_name', '')} — {update.get('timestamp', '')[:10]}
+                    <div style="color: {TEXT_SECONDARY}; font-size: 0.8rem;
+                                border-top: 1px solid rgba(255, 255, 255, 0.1);
+                                padding-top: 0.75rem;">
+                        🥊 <strong>{update.get('fighter_name', 'N/A')}</strong> •
+                        📅 {update.get('timestamp', 'N/A')[:10]}
                     </div>
                 </div>
                 """,
@@ -572,5 +793,12 @@ with tab_live:
             )
 
         st.markdown("---")
-        st.caption(f"✓ {updates_result['updates_count']} mise(s) à jour affichée(s). "
-                   f"Dernière update : {updates_result.get('last_update', 'N/A')[:10]}")
+        st.markdown(
+            f"""
+            <div style="text-align: center; padding: 1rem; color: {TEXT_SECONDARY}; font-size: 0.85rem;">
+                ✓ {updates_result['updates_count']} mise(s) à jour •
+                Dernière: {updates_result.get('last_update', 'N/A')[:10]}
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
