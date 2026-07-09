@@ -144,7 +144,7 @@ st.markdown(
     .trace-action {{ border-left-color: {ACCENT_GOLD} !important; }}
     .trace-observation {{ border-left-color: {SUCCESS_GREEN} !important; }}
 
-    /* GOLD BOX - Premium predictions */
+    /* ACCENT_GOLD BOX - Premium predictions */
     .gold-box {{
         background: linear-gradient(135deg, rgba(255, 215, 0, 0.15) 0%, rgba(255, 23, 68, 0.08) 100%);
         backdrop-filter: blur(10px);
@@ -387,11 +387,11 @@ with tab_tape:
 
     p1, pvs, p2 = st.columns([5, 1, 5])
     with p1:
-        st.markdown(render_fighter_portrait(a, BLUE), unsafe_allow_html=True)
+        st.markdown(render_fighter_portrait(a, ACCENT_BLUE), unsafe_allow_html=True)
     with pvs:
         st.markdown('<div class="vs-badge">VS</div>', unsafe_allow_html=True)
     with p2:
-        st.markdown(render_fighter_portrait(b, RED), unsafe_allow_html=True)
+        st.markdown(render_fighter_portrait(b, ACCENT_RED), unsafe_allow_html=True)
 
     st.markdown("")
 
@@ -407,7 +407,7 @@ with tab_tape:
 
     axes = ["Striking", "Grappling", "Cardio", "Puissance", "Menton", "Défense TD"]
     fig = go.Figure()
-    for f, color, fill in [(a, BLUE, "rgba(77,124,255,0.25)"), (b, RED, "rgba(230,0,0,0.25)")]:
+    for f, color, fill in [(a, ACCENT_BLUE, "rgba(0, 217, 255, 0.25)"), (b, ACCENT_RED, "rgba(255, 23, 68, 0.25)")]:
         vals = radar_values(f)
         fig.add_trace(go.Scatterpolar(
             r=vals + vals[:1], theta=axes + axes[:1], name=f["name"],
@@ -472,7 +472,15 @@ def render_final_report(report: dict, name_a: str, name_b: str) -> None:
     prob_b = float(report.get("victory_probability_b", 50))
     total = prob_a + prob_b if (prob_a + prob_b) > 0 else 1
     prob_a, prob_b = 100 * prob_a / total, 100 * prob_b / total
-    favorite, fav_prob, fav_color = (name_a, prob_a, BLUE) if prob_a >= prob_b else (name_b, prob_b, RED)
+    favorite, fav_prob, fav_color = (name_a, prob_a, ACCENT_BLUE) if prob_a >= prob_b else (name_b, prob_b, ACCENT_RED)
+
+    # Convertir couleur hex en RGB pour la barre de probabilité
+    def hex_to_rgba(hex_color, alpha=1):
+        h = hex_color.lstrip('#')
+        return f"rgba({int(h[0:2], 16)}, {int(h[2:4], 16)}, {int(h[4:6], 16)}, {alpha})"
+
+    color_a_rgb = hex_to_rgba(ACCENT_BLUE)
+    color_b_rgb = hex_to_rgba(ACCENT_RED)
 
     st.markdown(f'<div class="gold-box">🥇 Prédiction : {favorite} · '
                 f'{report.get("predicted_method", "N/A")}</div>', unsafe_allow_html=True)
@@ -481,19 +489,19 @@ def render_final_report(report: dict, name_a: str, name_b: str) -> None:
     # portraits photo autour de la barre de probabilité
     pc1, pc2, pc3 = st.columns([2, 6, 2])
     with pc1:
-        st.markdown(render_fighter_portrait(get_fighter_stats(name_a), BLUE), unsafe_allow_html=True)
+        st.markdown(render_fighter_portrait(get_fighter_stats(name_a), ACCENT_BLUE), unsafe_allow_html=True)
     with pc3:
-        st.markdown(render_fighter_portrait(get_fighter_stats(name_b), RED), unsafe_allow_html=True)
+        st.markdown(render_fighter_portrait(get_fighter_stats(name_b), ACCENT_RED), unsafe_allow_html=True)
     with pc2:
         bar_a = int(prob_a)
         st.markdown(
             f"""
             <div style="margin-top:55px;display:flex;height:44px;border-radius:8px;overflow:hidden;
-                        font-weight:800;font-family:'Arial Black',sans-serif;">
-                <div style="width:{bar_a}%;background:{BLUE};display:flex;align-items:center;
-                            justify-content:center;">{name_a} {prob_a:.0f}%</div>
-                <div style="width:{100 - bar_a}%;background:{RED};display:flex;align-items:center;
-                            justify-content:center;">{name_b} {prob_b:.0f}%</div>
+                        font-weight:800;font-family:'Poppins', sans-serif;">
+                <div style="width:{bar_a}%;background:{ACCENT_BLUE};display:flex;align-items:center;
+                            justify-content:center; transition: all 0.5s ease;">{name_a} {prob_a:.0f}%</div>
+                <div style="width:{100 - bar_a}%;background:{ACCENT_RED};display:flex;align-items:center;
+                            justify-content:center; transition: all 0.5s ease;">{name_b} {prob_b:.0f}%</div>
             </div>
             """,
             unsafe_allow_html=True,
@@ -527,7 +535,7 @@ def render_final_report(report: dict, name_a: str, name_b: str) -> None:
                 "bar": {"color": fav_color},
                 "bgcolor": "#1a1a1d",
                 "borderwidth": 1, "bordercolor": "#333",
-                "threshold": {"line": {"color": GOLD, "width": 3}, "value": fav_prob},
+                "threshold": {"line": {"color": ACCENT_GOLD, "width": 3}, "value": fav_prob},
             },
         ))
         gauge.update_layout(paper_bgcolor="rgba(0,0,0,0)", height=240,
@@ -675,7 +683,7 @@ with tab_elo:
         hl = ' style="background:rgba(212,175,55,.12);"' if r["fighter"] in (fighter_a, fighter_b) else ""
         rows_html += (f"<tr{hl}><td style='padding:6px 10px;'>#{r['rank']}</td>"
                       f"<td style='padding:6px 10px;'>{img}{r['fighter']}</td>"
-                      f"<td style='padding:6px 10px;font-weight:800;color:{GOLD};'>{r['elo']}</td></tr>")
+                      f"<td style='padding:6px 10px;font-weight:800;color:{ACCENT_GOLD};'>{r['elo']}</td></tr>")
     st.markdown(f"<table style='width:100%;border-collapse:collapse;'>{rows_html}</table>",
                 unsafe_allow_html=True)
 
