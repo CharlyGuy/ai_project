@@ -1,0 +1,6 @@
+streamlit>=1.38
+anthropic>=0.40
+python-dotenv>=1.0
+scikit-learn>=1.4
+numpy>=1.26
+mcp>=1.0
