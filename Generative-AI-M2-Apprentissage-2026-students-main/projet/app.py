@@ -23,7 +23,9 @@ from src.assets import render_fighter_portrait
 from src.fight3d_loader import load_fight3d_html
 from src.tools import (get_betting_odds, get_elo_ratings, get_fighter_stats,
                        list_fighters, register_custom_fighter,
-                       simulate_fight_playbyplay, get_live_updates)
+                       simulate_fight_playbyplay, get_live_updates,
+                       get_fighter_progression, get_training_recommendations,
+                       generate_camp_plan, add_coach_notes, analyze_matchup_difficulty)
 from src.assets import get_fighter_photo
 
 load_dotenv()
@@ -378,8 +380,8 @@ def _implied_prob(name: str):
 # --------------------------------------------------------------------------
 # ONGLETS
 # --------------------------------------------------------------------------
-tab_tape, tab_agent, tab_3d, tab_elo, tab_live = st.tabs(
-    ["📋 Tale of the Tape", "🤖 Analyse Agent", "⚔️ Fight Simulator 3D", "🏆 Classement ELO", "🔴 Live Updates"])
+tab_tape, tab_agent, tab_3d, tab_elo, tab_live, tab_coach = st.tabs(
+    ["📋 Tale of the Tape", "🤖 Analyse Agent", "⚔️ Fight Simulator 3D", "🏆 Classement ELO", "🔴 Live Updates", "👨‍🏫 Coach Mode"])
 
 # ============================ ONGLET 1 : TALE OF THE TAPE =================
 with tab_tape:
@@ -810,3 +812,181 @@ with tab_live:
             """,
             unsafe_allow_html=True,
         )
+
+# ============================ ONGLET 6 : COACH MODE ===========================
+with tab_coach:
+    st.markdown(
+        f"""
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1 style="font-family: 'Poppins', sans-serif; font-size: 2.5rem;
+                       background: linear-gradient(120deg, {ACCENT_PURPLE}, {ACCENT_BLUE});
+                       -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+                       margin-bottom: 0.5rem;">👨‍🏫 Coach Mode</h1>
+            <p style="color: {TEXT_SECONDARY}; font-size: 1rem;">Préparez votre combattant scientifiquement</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+    coach_mode = st.radio(
+        "Choisir un outil",
+        ["📊 Analyse de Progression", "💪 Recommandations d'Entraînement",
+         "📅 Plan de Camp", "📝 Notes d'Entraînement", "🎯 Analyse de Difficulté"],
+        horizontal=True
+    )
+
+    # =============== ANALYSE DE PROGRESSION ===============
+    if coach_mode == "📊 Analyse de Progression":
+        st.markdown(
+            f"""<div class="gold-box">📊 Analysez la trajectoire de votre combattant</div>""",
+            unsafe_allow_html=True,
+        )
+
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            fighter_focus = st.selectbox("Combattant à analyser", fighters, key="coach_fighter_prog")
+        with col2:
+            n_fights_slider = st.slider("Nombre de combats", 5, 20, 10)
+
+        if st.button("🔍 Analyser la progression", use_container_width=True, type="primary"):
+            prog = get_fighter_progression(fighter_focus, n_fights_slider)
+            if "error" not in prog:
+                st.markdown(
+                    f"""
+                    <div class="gameplan-card" style="border-top-color: {ACCENT_PURPLE};">
+                        <h4>{fighter_focus} - Trajectoire {prog['trajectory']}</h4>
+                        <div style="font-size: 1.1rem; margin-bottom: 1rem;">
+                            <strong>Record:</strong> {prog['recent_record']} |
+                            <strong>Taux de victoire:</strong> {prog['win_rate']}
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <strong>Derniers 5 combats:</strong> {' → '.join(prog['last_5_results'])}<br>
+                            <strong>Méthodes:</strong> {', '.join(f'{m}: {c}x' for m, c in prog['methods_used'].items())}
+                        </div>
+                        <p style="color: {ACCENT_BLUE}; font-style: italic;">{prog['analysis']}</p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+    # =============== RECOMMANDATIONS D'ENTRAÎNEMENT ===============
+    elif coach_mode == "💪 Recommandations d'Entraînement":
+        st.markdown(
+            f"""<div class="gold-box">💪 Recommandations personnalisées pour ce matchup</div>""",
+            unsafe_allow_html=True,
+        )
+
+        col1, col2 = st.columns(2)
+        with col1:
+            fighter_to_train = st.selectbox("Votre combattant", fighters, key="coach_fighter_train")
+        with col2:
+            opponent_to_face = st.selectbox("Son adversaire", fighters, key="coach_opponent",
+                                           index=1 if len(fighters) > 1 else 0)
+
+        if st.button("📋 Générer recommandations", use_container_width=True, type="primary"):
+            recs = get_training_recommendations(fighter_to_train, opponent_to_face)
+            if "error" not in recs:
+                st.markdown(f"### {fighter_to_train} vs {opponent_to_face}")
+                st.markdown(f"**Priorité:** {recs['priority']} | **Durée du camp:** {recs['camp_length_weeks']} semaines")
+
+                for i, rec in enumerate(recs['recommendations']):
+                    st.markdown(
+                        f"""
+                        <div class="gameplan-card" style="border-top-color: {ACCENT_RED}; margin-bottom: 1rem;">
+                            <h4>{rec['focus']}</h4>
+                            <p style="color: {TEXT_SECONDARY};">{rec['description']}</p>
+                            <div style="font-size: 0.9rem; color: {TEXT_SECONDARY};">
+                                ⏱️ {rec['duration']} | 💪 Intensité: {rec['intensity']}
+                            </div>
+                        </div>
+                        """,
+                        unsafe_allow_html=True,
+                    )
+
+    # =============== PLAN DE CAMP ===============
+    elif coach_mode == "📅 Plan de Camp":
+        st.markdown(
+            f"""<div class="gold-box">📅 Plan d'entraînement semaine par semaine</div>""",
+            unsafe_allow_html=True,
+        )
+
+        col1, col2 = st.columns([2, 1])
+        with col1:
+            fighter_camp = st.selectbox("Combattant", fighters, key="coach_fighter_camp")
+        with col2:
+            weeks_camp = st.slider("Semaines", 3, 12, 6)
+
+        if st.button("📋 Générer le plan", use_container_width=True, type="primary"):
+            camp = generate_camp_plan(fighter_camp, weeks=weeks_camp)
+            if "error" not in camp:
+                st.markdown(f"### Plan pour {camp['fighter']} ({camp['camp_duration_weeks']} semaines)")
+                st.markdown(f"**Sessions totales:** {camp['total_sessions']}")
+
+                for week_name, week_data in camp['weekly_plan'].items():
+                    with st.expander(f"{week_name} - {week_data['focus']} (Intensité: {week_data['intensity']}%)", expanded=False):
+                        st.markdown(f"""
+                        **Description:** {week_data['description']}
+
+                        **Sessions:** {week_data['session_count']}/semaine
+
+                        **Exercices clés:** {', '.join(week_data['key_drills'])}
+                        """)
+
+    # =============== NOTES D'ENTRAÎNEMENT ===============
+    elif coach_mode == "📝 Notes d'Entraînement":
+        st.markdown(
+            f"""<div class="gold-box">📝 Enregistrer vos observations d'entraînement</div>""",
+            unsafe_allow_html=True,
+        )
+
+        with st.form("coach_notes_form"):
+            fighter_notes = st.selectbox("Combattant", fighters, key="coach_fighter_notes")
+            date_notes = st.date_input("Date de la session")
+            text_notes = st.text_area("Vos observations", placeholder="Ex: A bien travaillé les takedowns, cardio excellent...", height=100)
+            rating = st.slider("Note de performance", 1, 10, 7)
+
+            if st.form_submit_button("💾 Enregistrer", use_container_width=True):
+                result = add_coach_notes(fighter_notes, str(date_notes), text_notes, rating)
+                if result.get("status") == "success":
+                    st.success(f"✅ Notes enregistrées pour {fighter_notes} ({rating}/10)")
+                else:
+                    st.error("Erreur lors de l'enregistrement")
+
+    # =============== ANALYSE DE DIFFICULTÉ ===============
+    elif coach_mode == "🎯 Analyse de Difficulté":
+        st.markdown(
+            f"""<div class="gold-box">🎯 Évaluez la difficulté du matchup</div>""",
+            unsafe_allow_html=True,
+        )
+
+        col1, col2 = st.columns(2)
+        with col1:
+            fighter_diff = st.selectbox("Votre combattant", fighters, key="coach_fighter_diff")
+        with col2:
+            opponent_diff = st.selectbox("Adversaire", fighters, key="coach_opponent_diff",
+                                        index=1 if len(fighters) > 1 else 0)
+
+        if st.button("🎯 Analyser la difficulté", use_container_width=True, type="primary"):
+            difficulty = analyze_matchup_difficulty(fighter_diff, opponent_diff)
+            if "error" not in difficulty:
+                st.markdown(
+                    f"""
+                    <div class="gameplan-card">
+                        <h4>Matchup: {difficulty['fighter']} vs {difficulty['opponent']}</h4>
+                        <div style="font-size: 1.3rem; margin-bottom: 1rem; font-weight: 700;">
+                            Difficulté: {difficulty['difficulty_level']}
+                        </div>
+                        <div style="background: rgba(255,255,255,0.05); padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                            <strong>Probabilité de victoire:</strong> {difficulty['win_probability_pct']}%<br>
+                            <strong>Niveau de risque:</strong> {difficulty['risk_level']}<br>
+                            <strong>Facteurs de difficulté:</strong><br>
+                            {chr(10).join(f"• {f}" for f in difficulty['difficulty_factors'])}
+                        </div>
+                        <p style="color: {ACCENT_BLUE}; font-weight: 600; padding: 1rem;
+                                  background: rgba(0, 217, 255, 0.1); border-radius: 8px;">
+                            💡 {difficulty['recommendation']}
+                        </p>
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )

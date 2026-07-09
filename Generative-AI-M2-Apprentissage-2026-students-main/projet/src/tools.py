@@ -797,6 +797,191 @@ def get_live_updates(fighter_name: str | None = None) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# TOOLS COACH - analyse avancée pour entraîneurs
+# ---------------------------------------------------------------------------
+
+def get_fighter_progression(fighter_name: str, n_fights: int = 10) -> dict:
+    """Analyse la progression du combattant sur N derniers combats."""
+    fighter = _get_fighter(fighter_name)
+    if not fighter:
+        return {"error": f"Combattant '{fighter_name}' introuvable."}
+
+    history = db.get_history(fighter_name, n=n_fights)
+    if not history:
+        return {"fighter": fighter_name, "progression": "Pas d'historique"}
+
+    wins = sum(1 for f in history if f["result"] == "W")
+    losses = len(history) - wins
+    methods = {}
+    for f in history:
+        m = f["method"]
+        methods[m] = methods.get(m, 0) + 1
+
+    trajectory = "📈 Montée" if wins > losses else "📉 Déclin" if losses > wins else "→ Stable"
+
+    return {
+        "fighter": fighter_name,
+        "trajectory": trajectory,
+        "recent_record": f"{wins}-{losses} sur {n_fights}",
+        "win_rate": f"{round(100 * wins / n_fights, 1)}%",
+        "methods_used": methods,
+        "last_5_results": [f["result"] for f in history[:5]],
+        "analysis": f"{fighter_name} {'gagne régulièrement' if wins >= losses else 'peine à convertir ses combats'}"
+    }
+
+
+def get_training_recommendations(fighter_a: str, fighter_b: str) -> dict:
+    """Générer des recommandations d'entraînement pour préparer le combattant A contre B."""
+    a, b = _get_fighter(fighter_a), _get_fighter(fighter_b)
+    if not a or not b:
+        return {"error": "Un des deux combattants est introuvable."}
+
+    comp = compare_styles(fighter_a, fighter_b)
+    recommendations = []
+
+    # Analyse des faiblesses vs force de l'adversaire
+    if b["power_rating"] >= 8 and a["chin_durability"] <= 6:
+        recommendations.append({
+            "focus": "🛡️ DÉFENSE",
+            "description": "L'adversaire a une puissance élevée. Travailler le head movement et la footwork.",
+            "duration": "2-3 semaines", "intensity": "Élevée"
+        })
+
+    if b["takedown_avg_per_15min"] >= 3 and a["takedown_defense_pct"] < 70:
+        recommendations.append({
+            "focus": "🤼 LUTTE",
+            "description": "L'adversaire est dominant au sol. Intensifier la TDD et le clinch.",
+            "duration": "3-4 semaines", "intensity": "Maximale"
+        })
+
+    if a["cardio_rating"] <= 6:
+        recommendations.append({
+            "focus": "💨 CARDIO",
+            "description": "Travail cardio intensif pour aller les 3 rounds.",
+            "duration": "Tout le camp", "intensity": "Élevée"
+        })
+
+    if b["ko_rate_pct"] < 30:
+        recommendations.append({
+            "focus": "⚡ PATIENCE",
+            "description": "Adversaire pas un finisher - jouer la décision, scoring points.",
+            "duration": "Dernière semaine", "intensity": "Modérée"
+        })
+
+    return {
+        "fighter_preparing": fighter_a,
+        "opponent": fighter_b,
+        "recommendations": recommendations if recommendations else [
+            {"focus": "✅ ÉQUILIBRE", "description": "Matchup équilibré - focus sur basics et exécution.", "duration": "Tout le camp", "intensity": "Modérée"}
+        ],
+        "camp_length_weeks": 6,
+        "priority": "ÉLEVÉE" if len(recommendations) >= 2 else "MODÉRÉE"
+    }
+
+
+def generate_camp_plan(fighter_name: str, opponent_name: str | None = None, weeks: int = 6) -> dict:
+    """Génère un plan d'entraînement semaine par semaine pour préparer un combat."""
+    fighter = _get_fighter(fighter_name)
+    if not fighter:
+        return {"error": f"Combattant '{fighter_name}' introuvable."}
+
+    plan = {}
+    week_focus = [
+        "🔧 Technique & Fondamentaux - Peaufiner la mécanique",
+        "💪 Force & Puissance - Renforcement musculaire spécifique",
+        "⚡ Cardio & Endurance - Travail de souffle et résistance",
+        "🤖 Sparring Technique - Simulations de combat leger",
+        "🥊 Sparring Intensif - Full contact préparation",
+        "🎯 Affutage Final - Repos relatif et derniers réglages"
+    ]
+
+    for week in range(1, weeks + 1):
+        idx = min(week - 1, len(week_focus) - 1)
+        focus, description = week_focus[idx].split(" - ")
+        plan[f"Week {week}"] = {
+            "focus": focus,
+            "description": description,
+            "session_count": 5 if week < weeks else 3,
+            "intensity": 60 + (week * 5) if week < weeks else 50,
+            "key_drills": ["Footwork", "Cardio", "Technique"] if week <= 3 else ["Sparring", "Scenario training", "Recovery"],
+        }
+
+    return {
+        "fighter": fighter_name,
+        "opponent": opponent_name or "À définir",
+        "camp_duration_weeks": weeks,
+        "start_date": "À confirmer",
+        "weekly_plan": plan,
+        "weight_cut_week": weeks,
+        "total_sessions": sum(p["session_count"] for p in plan.values())
+    }
+
+
+def add_coach_notes(fighter_name: str, session_date: str, notes: str, rating: int = 5) -> dict:
+    """Enregistrer des notes d'entraînement du coach pour un combattant."""
+    fighter = _get_fighter(fighter_name)
+    if not fighter:
+        return {"error": f"Combattant '{fighter_name}' introuvable."}
+
+    # Ajouter les notes comme live update
+    db.add_live_update(
+        fighter_name,
+        "training",
+        f"Notes d'entraînement {session_date}",
+        f"[Coach] {notes} | Rating: {rating}/10",
+        severity="info"
+    )
+
+    return {
+        "status": "success",
+        "fighter": fighter_name,
+        "date": session_date,
+        "notes_recorded": notes,
+        "rating": rating,
+        "message": f"Notes enregistrées pour {fighter_name}"
+    }
+
+
+def analyze_matchup_difficulty(fighter_name: str, opponent_name: str) -> dict:
+    """Analyser le niveau de difficulté d'un matchup pour un coach."""
+    a, b = _get_fighter(fighter_name), _get_fighter(opponent_name)
+    if not a or not b:
+        return {"error": "Un des deux combattants est introuvable."}
+
+    sim = simulate_fight(fighter_name, opponent_name, n_simulations=300)
+    win_prob = sim.get("win_probability_a_pct", 50)
+
+    # Scoring de difficulté
+    difficulty_factors = []
+    if b["power_rating"] > a["power_rating"] + 1:
+        difficulty_factors.append("Puissance supérieure de l'adversaire")
+    if b["takedown_avg_per_15min"] > a["takedown_defense_pct"] / 15:
+        difficulty_factors.append("Avantage grappling adversaire")
+    if b["cardio_rating"] > a["cardio_rating"] + 1:
+        difficulty_factors.append("Meilleur cardio adverse")
+
+    if win_prob >= 55:
+        difficulty = "🟢 FAVORABLE"
+        recommendation = "Matchup favorable - stratégie offensive recommandée"
+    elif win_prob >= 45:
+        difficulty = "🟡 ÉQUILIBRÉ"
+        recommendation = "Matchup serré - exécution technique critique"
+    else:
+        difficulty = "🔴 DIFFICILE"
+        recommendation = "Matchup difficile - focus sur les points forts du combattant"
+
+    return {
+        "fighter": fighter_name,
+        "opponent": opponent_name,
+        "difficulty_level": difficulty,
+        "win_probability_pct": round(win_prob, 1),
+        "difficulty_factors": difficulty_factors or ["Matchup équilibré"],
+        "recommendation": recommendation,
+        "risk_level": "ÉLEVÉE" if win_prob < 40 else "MODÉRÉE" if win_prob < 50 else "FAIBLE"
+    }
+
+
+# ---------------------------------------------------------------------------
 # Schemas Anthropic (tool use) + table de dispatch
 # ---------------------------------------------------------------------------
 
@@ -1009,6 +1194,74 @@ TOOL_SCHEMAS = [
             },
         },
     },
+    {
+        "name": "get_fighter_progression",
+        "description": "👨‍🏫 COACH : analyse la progression du combattant sur ses N derniers combats. "
+                        "Identifie si en montée ou en déclin, avec tendances par méthode de victoire.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string"},
+                "n_fights": {"type": "integer", "description": "Nombre de combats à analyser (défaut 10)"},
+            },
+            "required": ["fighter_name"],
+        },
+    },
+    {
+        "name": "get_training_recommendations",
+        "description": "💪 COACH : génère des recommandations d'entraînement spécifiques pour préparer le combattant A "
+                        "contre le combattant B. Focus sur les faiblesses et points critiques.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_a": {"type": "string", "description": "Combattant à préparer (votre élève)"},
+                "fighter_b": {"type": "string", "description": "Adversaire"},
+            },
+            "required": ["fighter_a", "fighter_b"],
+        },
+    },
+    {
+        "name": "generate_camp_plan",
+        "description": "📅 COACH : génère un plan d'entraînement semaine par semaine (6 semaines par défaut) "
+                        "avec focus, intensité, et exercices clés pour chaque semaine.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string"},
+                "opponent_name": {"type": "string", "description": "Adversaire (optionnel)"},
+                "weeks": {"type": "integer", "description": "Durée du camp en semaines (défaut 6)"},
+            },
+            "required": ["fighter_name"],
+        },
+    },
+    {
+        "name": "add_coach_notes",
+        "description": "📝 COACH : enregistrer des notes d'entraînement pour un combattant avec rating (1-10). "
+                        "Les notes sont sauvegardées en temps réel et apparaissent dans les updates.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string"},
+                "session_date": {"type": "string", "description": "Date de la session (YYYY-MM-DD)"},
+                "notes": {"type": "string", "description": "Observations du coach (ex: 'A bien travaillé les takedowns')"},
+                "rating": {"type": "integer", "description": "Note de performance 1-10 (défaut 5)"},
+            },
+            "required": ["fighter_name", "session_date", "notes"],
+        },
+    },
+    {
+        "name": "analyze_matchup_difficulty",
+        "description": "🎯 COACH : analyser la difficulté d'un matchup pour déterminer le niveau de risque et "
+                        "les facteurs clés. Aide le coach à évaluer le combat et ajuster la préparation.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string", "description": "Votre combattant"},
+                "opponent_name": {"type": "string", "description": "L'adversaire"},
+            },
+            "required": ["fighter_name", "opponent_name"],
+        },
+    },
 ]
 
 TOOL_DISPATCH = {
@@ -1027,6 +1280,11 @@ TOOL_DISPATCH = {
     "get_injury_status": lambda args: get_injury_status(**args),
     "get_recent_form": lambda args: get_recent_form(**args),
     "get_live_updates": lambda args: get_live_updates(**args),
+    "get_fighter_progression": lambda args: get_fighter_progression(**args),
+    "get_training_recommendations": lambda args: get_training_recommendations(**args),
+    "generate_camp_plan": lambda args: generate_camp_plan(**args),
+    "add_coach_notes": lambda args: add_coach_notes(**args),
+    "analyze_matchup_difficulty": lambda args: analyze_matchup_difficulty(**args),
 }
 
 
