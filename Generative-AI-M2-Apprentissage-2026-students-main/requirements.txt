@@ -1,27 +1,11 @@
-# Core
-pandas
-numpy
-
-# LLM / API
-anthropic
-python-dotenv
-
-# Embeddings & RAG
-sentence-transformers
-chromadb
-
-# Lab 2 — classic ML classification
-scikit-learn
-
-# Visualization (embeddings, Lab 1)
-matplotlib
-
-# Lab 4 — Model Context Protocol
-mcp
-
-# Notebooks
-jupyter
-ipykernel
-
-# Hackathon project (optional, per group)
-flask
+streamlit>=1.38
+anthropic>=0.40
+python-dotenv>=1.0
+numpy>=1.26
+plotly>=5.20
+chromadb>=0.5
+sentence-transformers>=3.0
+mcp>=1.0
+# Utilisés uniquement par scripts/download_photos.py (téléchargement des photos)
+certifi>=2024.0
+Pillow>=10.0
