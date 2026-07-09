@@ -1,20 +1,35 @@
 """
 Point d'entrée Streamlit pour FightStrategist AI
-Rédirige vers le app.py du projet/ avec les imports gérés
+Charge app.py du dossier projet/ en tant que script
 """
 import sys
-from pathlib import Path
+import os
+import runpy
 
-# Ajouter le dossier projet au chemin Python AVANT tout import
-project_path = Path(__file__).parent / "projet"
-sys.path.insert(0, str(project_path))
-
-# Maintenant on peut importer depuis src comme si on était dans projet/
-# Exécuter le contenu du app.py du projet
+# Déterminer les chemins
 try:
-    exec(open(project_path / "app.py").read())
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+except:
+    script_dir = os.getcwd()
+
+project_dir = os.path.join(script_dir, "projet")
+app_file = os.path.join(project_dir, "app.py")
+
+# Ajouter projet au sys.path
+if project_dir not in sys.path:
+    sys.path.insert(0, project_dir)
+
+# Changer le répertoire courant
+os.chdir(project_dir)
+
+# Charger et exécuter l'app
+try:
+    runpy.run_path(app_file, run_name="__main__")
 except Exception as e:
     import streamlit as st
-    st.error(f"Erreur lors du chargement de l'app: {e}")
+    st.set_page_config(page_title="Error", page_icon="❌", layout="wide")
+    st.error(f"❌ **Erreur lors du chargement**")
+    st.error(f"**{type(e).__name__}:** {e}")
     import traceback
-    st.write(traceback.format_exc())
+    with st.expander("📋 Traceback complet"):
+        st.code(traceback.format_exc())
