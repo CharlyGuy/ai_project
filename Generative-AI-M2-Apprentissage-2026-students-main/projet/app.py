@@ -23,7 +23,7 @@ from src.assets import render_fighter_portrait
 from src.fight3d_loader import load_fight3d_html
 from src.tools import (get_betting_odds, get_elo_ratings, get_fighter_stats,
                        list_fighters, register_custom_fighter,
-                       simulate_fight_playbyplay)
+                       simulate_fight_playbyplay, get_live_updates)
 from src.assets import get_fighter_photo
 
 load_dotenv()
@@ -203,8 +203,8 @@ def _implied_prob(name: str):
 # --------------------------------------------------------------------------
 # ONGLETS
 # --------------------------------------------------------------------------
-tab_tape, tab_agent, tab_3d, tab_elo = st.tabs(
-    ["📋 Tale of the Tape", "🤖 Analyse Agent", "⚔️ Fight Simulator 3D", "🏆 Classement ELO"])
+tab_tape, tab_agent, tab_3d, tab_elo, tab_live = st.tabs(
+    ["📋 Tale of the Tape", "🤖 Analyse Agent", "⚔️ Fight Simulator 3D", "🏆 Classement ELO", "🔴 Live Updates"])
 
 # ============================ ONGLET 1 : TALE OF THE TAPE =================
 with tab_tape:
@@ -503,3 +503,74 @@ with tab_elo:
                       f"<td style='padding:6px 10px;font-weight:800;color:{GOLD};'>{r['elo']}</td></tr>")
     st.markdown(f"<table style='width:100%;border-collapse:collapse;'>{rows_html}</table>",
                 unsafe_allow_html=True)
+
+# ============================ ONGLET 5 : LIVE UPDATES ========================
+with tab_live:
+    st.header("🔴 Mises à jour en temps réel")
+    st.markdown(
+        '<div class="baseline-box">📡 Dernières news, blessures rapportées, changements odds et développements '
+        'd\'entraînement — mises à jour publiées en direct de la communauté MMA.</div>',
+        unsafe_allow_html=True,
+    )
+
+    # Filtrer par combattant ou voir toutes les updates
+    col_filter, col_auto = st.columns([3, 2])
+    with col_filter:
+        live_filter = st.selectbox("Filtrer par combattant", ["Tous les combattants"] + fighters, key="live_filter")
+    with col_auto:
+        if st.button("🔄 Rafraîchir", use_container_width=True):
+            st.rerun()
+
+    filter_name = None if live_filter == "Tous les combattants" else live_filter
+
+    # Récupérer les updates temps réel
+    updates_result = get_live_updates(filter_name)
+    updates = updates_result.get("recent_updates", [])
+
+    if not updates:
+        st.info("Aucune mise à jour en direct pour le moment. Vérifiez à nouveau plus tard! 📡")
+    else:
+        # Afficher les updates groupées par type
+        update_types = {
+            "injury": ("🚑", "Blessure", "#ff6b6b"),
+            "news": ("📰", "News", "#4ecdc4"),
+            "odds": ("💰", "Odds", "#ffe66d"),
+            "form": ("📈", "Forme", "#95e1d3"),
+            "training": ("💪", "Entraînement", "#a8dadc"),
+        }
+
+        for update in updates:
+            upd_type = update.get("update_type", "news")
+            icon, label, color = update_types.get(upd_type, ("📌", upd_type.title(), "#cccccc"))
+            severity = update.get("severity", "info")
+            severity_color = "#ff6b6b" if severity == "critical" else "#ffa600" if severity == "warning" else "#4ecdc4"
+
+            # Card style pour chaque update
+            st.markdown(
+                f"""
+                <div style="background: {color}11; border-left: 4px solid {color};
+                            border-radius: 8px; padding: 12px 16px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                        <span style="font-size: 1.3rem;">{icon}</span>
+                        <span style="color: {color}; font-weight: 800; text-transform: uppercase;
+                                     letter-spacing: 1px;">{label}</span>
+                        <span style="color: {severity_color}; font-size: 0.75rem;
+                                     font-weight: 700;">● {severity.upper()}</span>
+                    </div>
+                    <div style="font-weight: 700; color: #eee; margin-bottom: 4px;">
+                        {update.get('title', 'Sans titre')}
+                    </div>
+                    <div style="color: #bbb; font-size: 0.95rem; margin-bottom: 8px;">
+                        {update.get('description', '')}
+                    </div>
+                    <div style="color: #999; font-size: 0.8rem;">
+                        🕐 {update.get('fighter_name', '')} — {update.get('timestamp', '')[:10]}
+                    </div>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        st.markdown("---")
+        st.caption(f"✓ {updates_result['updates_count']} mise(s) à jour affichée(s). "
+                   f"Dernière update : {updates_result.get('last_update', 'N/A')[:10]}")

@@ -635,6 +635,168 @@ def submit_final_report(**kwargs) -> dict:
 
 
 # ---------------------------------------------------------------------------
+# NOUVEAUX TOOLS : analyse avancée + temps réel
+# ---------------------------------------------------------------------------
+
+def get_head_to_head(fighter_a: str, fighter_b: str) -> dict:
+    """Historique direct entre deux combattants : statistiques du matchup passé."""
+    a, b = _get_fighter(fighter_a), _get_fighter(fighter_b)
+    if not a or not b:
+        return {"error": "Un des deux combattants est introuvable."}
+
+    hist_a = db.get_history(fighter_a, n=50)
+    hist_b = db.get_history(fighter_b, n=50)
+
+    h2h = [f for f in hist_a if b["name"].lower() in f["opponent_name"].lower()]
+    h2h += [f for f in hist_b if a["name"].lower() in f["opponent_name"].lower()]
+    h2h.sort(key=lambda x: x["date"], reverse=True)
+
+    if not h2h:
+        return {
+            "fighter_a": a["name"],
+            "fighter_b": b["name"],
+            "head_to_head_record": "Aucun combat précédent",
+            "battles": [],
+            "verdict": "Matchup vierge — aucun historique direct."
+        }
+
+    a_wins = sum(1 for f in h2h if f["result"] == "W" and a["name"].lower() in (hist_a[hist_a.index(f)]["opponent_name"].lower() if f in hist_a else ""))
+
+    return {
+        "fighter_a": a["name"],
+        "fighter_b": b["name"],
+        "head_to_head_record": f"{len([f for f in h2h if f['result'] == 'W'])} combats dans l'historique",
+        "battles": h2h[:5],
+        "verdict": f"Historique direct : {len(h2h)} affrontements enregistrés"
+    }
+
+
+def get_fighter_streak(fighter_name: str) -> dict:
+    """Série actuelle du combattant : wins/losses consécutifs et momentum."""
+    fighter = _get_fighter(fighter_name)
+    if not fighter:
+        return {"error": f"Combattant '{fighter_name}' introuvable."}
+
+    history = db.get_history(fighter_name, n=20)
+    if not history:
+        return {"fighter": fighter_name, "streak": "Pas d'historique", "record": f"{fighter['wins']}-{fighter['losses']}"}
+
+    streak_wins = 0
+    streak_losses = 0
+    current_streak_type = None
+
+    for f in history:
+        if f["result"] == "W":
+            if current_streak_type != "W":
+                break
+            streak_wins += 1
+        elif f["result"] == "L":
+            if current_streak_type != "L":
+                break
+            streak_losses += 1
+        current_streak_type = f["result"]
+
+    streak_count = streak_wins if streak_wins > 0 else streak_losses
+    streak_type = "Victoires" if streak_wins > 0 else "Défaites"
+
+    momentum = "🔥 En feu" if streak_wins >= 3 else "⚡ Chaud" if streak_wins == 2 else "📉 En baisse" if streak_losses >= 2 else "Stable"
+
+    return {
+        "fighter": fighter_name,
+        "record": f"{fighter['wins']}-{fighter['losses']}-{fighter['draws']}",
+        "current_streak": f"{streak_count} {streak_type}",
+        "momentum": momentum,
+        "last_5_fights": [f["result"] for f in history[:5]],
+        "win_rate_recent": f"{round(100 * sum(1 for f in history[:10] if f['result'] == 'W') / min(10, len(history)), 1)}%"
+    }
+
+
+def predict_prop_bets(fighter_a: str, fighter_b: str) -> dict:
+    """Prédictions sur les paris spécialisés : over/under rounds, method bets, etc."""
+    a, b = _get_fighter(fighter_a), _get_fighter(fighter_b)
+    if not a or not b:
+        return {"error": "Un des deux combattants est introuvable."}
+
+    sim = simulate_fight(fighter_a, fighter_b, n_simulations=500, rounds=3)
+    if "error" in sim:
+        return sim
+
+    finish_rate = sim["finish_rate_pct"]
+
+    props = {
+        "over_under_2_5_rounds": {
+            "over": round(finish_rate * 0.7, 1),
+            "under": round(100 - finish_rate * 0.7, 1),
+            "prediction": "OVER" if finish_rate > 50 else "UNDER"
+        },
+        "method_bets": {
+            "knockout": round((a["ko_rate_pct"] + b["ko_rate_pct"]) / 2, 1),
+            "submission": round((a["submission_rate_pct"] + b["submission_rate_pct"]) / 2, 1),
+            "decision": round(100 - finish_rate, 1)
+        },
+        "round_bets": {
+            "round_1": round(finish_rate * 0.2, 1),
+            "round_2": round(finish_rate * 0.35, 1),
+            "round_3": round(finish_rate * 0.45, 1),
+            "distance": round(100 - finish_rate, 1)
+        }
+    }
+
+    return {
+        "fighter_a": fighter_a,
+        "fighter_b": fighter_b,
+        "proposition_bets": props,
+        "recommendation": f"Finish rate estimée à {finish_rate}% — favoriser {'OVER' if finish_rate > 50 else 'UNDER'}"
+    }
+
+
+def get_injury_status(fighter_name: str) -> dict:
+    """État de santé/blessures du combattant."""
+    return db.get_injury_status(fighter_name)
+
+
+def get_recent_form(fighter_name: str) -> dict:
+    """Tendance récente du combattant : montée, baisse, stagnation."""
+    fighter = _get_fighter(fighter_name)
+    if not fighter:
+        return {"error": f"Combattant '{fighter_name}' introuvable."}
+
+    history = db.get_history(fighter_name, n=10)
+    if not history:
+        return {"fighter": fighter_name, "form": "Pas de données récentes"}
+
+    last_5 = history[:5]
+    wins_5 = sum(1 for f in last_5 if f["result"] == "W")
+    last_10 = history[:10]
+    wins_10 = sum(1 for f in last_10 if f["result"] == "W")
+
+    wr_recent = wins_5 / len(last_5) * 100 if last_5 else 0
+    wr_extended = wins_10 / len(last_10) * 100 if last_10 else 0
+    trend = "📈 Montée en puissance" if wr_recent >= wr_extended else "📉 En déclin" if wr_recent < wr_extended - 10 else "→ Stable"
+
+    return {
+        "fighter": fighter_name,
+        "recent_form": trend,
+        "last_5_record": f"{wins_5}-{5 - wins_5}",
+        "last_10_record": f"{wins_10}-{10 - wins_10}",
+        "win_rate_5": f"{round(wr_recent, 1)}%",
+        "win_rate_10": f"{round(wr_extended, 1)}%",
+        "analysis": f"{fighter_name} {'remonte en flèche' if wr_recent > 70 else 'est en bonne forme' if wr_recent >= 50 else 'traverse une mauvaise passe'}."
+    }
+
+
+def get_live_updates(fighter_name: str | None = None) -> dict:
+    """Retourne les dernières mises à jour temps réel (news, blessures, odds, etc.)."""
+    updates = db.get_live_updates(fighter_name, limit=10)
+    return {
+        "fighter": fighter_name or "Tous",
+        "updates_count": len(updates),
+        "recent_updates": updates,
+        "last_update": updates[0]["timestamp"] if updates else None
+    }
+
+
+# ---------------------------------------------------------------------------
 # Schemas Anthropic (tool use) + table de dispatch
 # ---------------------------------------------------------------------------
 
@@ -774,6 +936,79 @@ TOOL_SCHEMAS = [
             ],
         },
     },
+    {
+        "name": "get_head_to_head",
+        "description": "Historique direct entre deux combattants : vérifie s'ils se sont déjà affrontés, "
+                        "avec résultats, méthodes et contexte tactique. Très utile pour les rematches.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_a": {"type": "string", "description": "Combattant A"},
+                "fighter_b": {"type": "string", "description": "Combattant B"},
+            },
+            "required": ["fighter_a", "fighter_b"],
+        },
+    },
+    {
+        "name": "get_fighter_streak",
+        "description": "Série actuelle du combattant (wins/losses consécutifs) et momentum (🔥 En feu / 📉 En baisse). "
+                        "Utile pour évaluer la confiance et la dynamique actuelle.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string", "description": "Nom du combattant"},
+            },
+            "required": ["fighter_name"],
+        },
+    },
+    {
+        "name": "predict_prop_bets",
+        "description": "Prédictions sur les paris spécialisés : over/under 2.5 rounds, méthode de victoire probable (KO/Sub/Décision), "
+                        "et par quel round. Basé sur la simulation Monte-Carlo.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_a": {"type": "string"},
+                "fighter_b": {"type": "string"},
+            },
+            "required": ["fighter_a", "fighter_b"],
+        },
+    },
+    {
+        "name": "get_injury_status",
+        "description": "État de santé du combattant : blessures rapportées, date de retour estimée, statut de disponibilité.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string"},
+            },
+            "required": ["fighter_name"],
+        },
+    },
+    {
+        "name": "get_recent_form",
+        "description": "Tendance récente du combattant sur les 5 et 10 derniers combats : montée (📈), baisse (📉) ou stagnation (→). "
+                        "Utile pour évaluer la trajectoire et la cohérence.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string"},
+            },
+            "required": ["fighter_name"],
+        },
+    },
+    {
+        "name": "get_live_updates",
+        "description": "🔴 TEMPS RÉEL : récupère les dernières mises à jour publiées en direct sur les combattants "
+                        "(news, blessures, changements odds, développements d'entraînement). Utile pour des infos fraîches.",
+        "input_schema": {
+            "type": "object",
+            "properties": {
+                "fighter_name": {"type": "string", "description": "Filtrer sur un combattant spécifique (optionnel). "
+                                                                   "Si omis, retourne les dernières updates globales."},
+            },
+        },
+    },
 ]
 
 TOOL_DISPATCH = {
@@ -786,6 +1021,12 @@ TOOL_DISPATCH = {
     "get_elo_ratings": lambda args: get_elo_ratings(**args),
     "simulate_fight_playbyplay": lambda args: simulate_fight_playbyplay(**args),
     "submit_final_report": lambda args: submit_final_report(**args),
+    "get_head_to_head": lambda args: get_head_to_head(**args),
+    "get_fighter_streak": lambda args: get_fighter_streak(**args),
+    "predict_prop_bets": lambda args: predict_prop_bets(**args),
+    "get_injury_status": lambda args: get_injury_status(**args),
+    "get_recent_form": lambda args: get_recent_form(**args),
+    "get_live_updates": lambda args: get_live_updates(**args),
 }
 
 

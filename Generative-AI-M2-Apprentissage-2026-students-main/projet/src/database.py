@@ -60,6 +60,25 @@ CREATE TABLE IF NOT EXISTS betting_odds (
     current_odds  INTEGER NOT NULL,  -- cote américaine actuelle (prochain combat)
     opening_odds  INTEGER NOT NULL   -- cote à l'ouverture des books
 );
+
+CREATE TABLE IF NOT EXISTS live_updates (
+    id            INTEGER PRIMARY KEY,
+    fighter_name  TEXT NOT NULL,
+    update_type   TEXT NOT NULL,    -- 'injury' | 'news' | 'training' | 'odds' | 'form'
+    title         TEXT NOT NULL,
+    description   TEXT NOT NULL,
+    timestamp     TEXT NOT NULL,    -- ISO 8601 timestamp
+    severity      TEXT DEFAULT 'info'  -- 'info' | 'warning' | 'critical'
+);
+
+CREATE TABLE IF NOT EXISTS injury_reports (
+    id            INTEGER PRIMARY KEY,
+    fighter_id    INTEGER NOT NULL REFERENCES fighters(id),
+    injury_type   TEXT NOT NULL,    -- 'minor' | 'moderate' | 'severe'
+    description   TEXT NOT NULL,
+    reported_date TEXT NOT NULL,
+    expected_return TEXT             -- date de retour estimée
+);
 """
 
 # (name, nickname, weight_class, height, reach, stance, W, L, D,
@@ -222,6 +241,32 @@ def init_db(force: bool = False) -> None:
             "INSERT INTO betting_odds (fighter_id, current_odds, opening_odds) VALUES (?,?,?)",
             [(ids[name], cur, op) for name, cur, op in _ODDS],
         )
+
+        # Exemple de données temps réel
+        from datetime import datetime, timedelta
+        now = datetime.now().isoformat()
+        yesterday = (datetime.now() - timedelta(days=1)).isoformat()
+
+        live_updates_data = [
+            ("Ilia Topuria", "form", "Grande performance à l'entraînement",
+             "Ilia Topuria s'entraîne à une intensité maximale à la Team Alpha — form excellente", "info"),
+            ("Jon Jones", "injury", "Blessure rapportée à l'épaule",
+             "Une source proche de l'équipe rapporte une légère tendinite à l'épaule", "warning"),
+            ("Islam Makhachev", "news", "Négociations pour un combat au titre",
+             "Dana White confirme que des négociations sont en cours pour janvier 2025", "info"),
+            ("Israel Adesanya", "odds", "Mouvement de ligne significatif",
+             "Les cotes ont bougé en faveur d'Adesanya après une séance d'entraînement impressionnante", "info"),
+            ("Tom Aspinall", "training", "Nouveau coach ajouté à l'équipe",
+             "Aspinall embauche un coach spécialisé en footwork offensif", "info"),
+        ]
+
+        for fighter, upd_type, title, desc, sev in live_updates_data:
+            conn.execute(
+                "INSERT INTO live_updates (fighter_name, update_type, title, description, timestamp, severity)"
+                " VALUES (?, ?, ?, ?, ?, ?)",
+                (fighter, upd_type, title, desc, now, sev),
+            )
+
         conn.commit()
     finally:
         conn.close()
@@ -291,6 +336,66 @@ def american_odds_to_prob(odds: int) -> float:
     if odds < 0:
         return round(100 * (-odds) / (-odds + 100), 1)
     return round(100 * 100 / (odds + 100), 1)
+
+
+def get_injury_status(fighter_name: str) -> dict:
+    """Retourne l'état de santé du combattant."""
+    fighter = get_fighter(fighter_name)
+    if not fighter:
+        return {"error": f"Combattant '{fighter_name}' introuvable."}
+    conn = _connect()
+    try:
+        injuries = conn.execute(
+            "SELECT injury_type, description, reported_date, expected_return FROM injury_reports"
+            " WHERE fighter_id = ? ORDER BY reported_date DESC LIMIT 5",
+            (fighter["id"],),
+        ).fetchall()
+        return {
+            "fighter": fighter_name,
+            "has_injuries": len(injuries) > 0,
+            "injuries": [dict(inj) for inj in injuries],
+            "status": "En bonne santé" if not injuries else "En phase de récupération"
+        }
+    finally:
+        conn.close()
+
+
+def get_live_updates(fighter_name: str | None = None, limit: int = 10) -> list[dict]:
+    """Récupère les dernières mises à jour en temps réel (news, blessures, form, etc.)."""
+    conn = _connect()
+    try:
+        if fighter_name:
+            rows = conn.execute(
+                "SELECT fighter_name, update_type, title, description, timestamp, severity"
+                " FROM live_updates WHERE fighter_name = ? ORDER BY timestamp DESC LIMIT ?",
+                (fighter_name, limit),
+            ).fetchall()
+        else:
+            rows = conn.execute(
+                "SELECT fighter_name, update_type, title, description, timestamp, severity"
+                " FROM live_updates ORDER BY timestamp DESC LIMIT ?",
+                (limit,),
+            ).fetchall()
+        return [dict(r) for r in rows]
+    finally:
+        conn.close()
+
+
+def add_live_update(fighter_name: str, update_type: str, title: str,
+                    description: str, severity: str = "info") -> bool:
+    """Ajoute une mise à jour en direct (utilisé pour les données temps réel)."""
+    from datetime import datetime
+    conn = _connect()
+    try:
+        conn.execute(
+            "INSERT INTO live_updates (fighter_name, update_type, title, description, timestamp, severity)"
+            " VALUES (?, ?, ?, ?, ?, ?)",
+            (fighter_name, update_type, title, description, datetime.now().isoformat(), severity),
+        )
+        conn.commit()
+        return True
+    finally:
+        conn.close()
 
 
 if __name__ == "__main__":
